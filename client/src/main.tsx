@@ -12,8 +12,9 @@ import {
   ProductDetails,
   UserDashboard,
 } from "./pages"
-import { AdminCheck, AuthCheck } from "./auth-wrappers/index.ts"
 import { Register } from "./components"
+import AuthCheck from "./auth-wrappers/AuthCheck.tsx"
+import AdminCheck from "./auth-wrappers/AdminCheck.tsx"
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
     errorElement: <NotFound404 />,
     children: [
       {
-        path: "",
+        path: "/",
         element: <Home />,
       },
       {
@@ -66,7 +67,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+  // <StrictMode>
+  <RouterProvider router={router} />
+  // </StrictMode>
 )

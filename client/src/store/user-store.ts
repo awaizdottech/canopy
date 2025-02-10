@@ -5,23 +5,24 @@ type userStoreType = {
   user: {
     username: string
     mobile: number
-    tokens: []
+    tokens: {}
     authStatus: boolean
-    cart: []
+    cart: string[]
     orders: []
   }
   loginUser(): void
   logoutUser(): void
+  addToCart(productId: string): void
 }
 
-export const useUserStore = create<userStoreType>()(
+const useUserStore = create<userStoreType>()(
   devtools(
     persist(
       set => ({
         user: {
           username: "",
           mobile: 0,
-          tokens: [],
+          tokens: {},
           authStatus: false,
           cart: [],
           orders: [],
@@ -30,8 +31,17 @@ export const useUserStore = create<userStoreType>()(
           set(state => ({ user: { ...state.user, authStatus: true } })),
         logoutUser: () =>
           set(state => ({ user: { ...state.user, authStatus: false } })),
+        addToCart: (productId: string) =>
+          set(state => ({
+            user: { ...state.user, cart: [...state.user.cart, productId] },
+          })),
       }),
-      { name: "canopyUser" }
+      {
+        name: "canopyUser",
+        partialize: state => ({ tokens: state.user.tokens }),
+      }
     )
   )
 )
+
+export default useUserStore

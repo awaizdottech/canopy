@@ -11,17 +11,28 @@ const passwordSchema = z
     }
   )
 
-export const registerSchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(2, "Username must be at least 2 characters")
-    .max(20, "Username must be no more than 20 characters")
-    .toLowerCase(),
-  email: z.string().trim(),
-  mobile: z.string().regex(/^(\+?91|0)?[6-9]\d{9}$/),
-  password: passwordSchema,
-})
+export const registerSchema = z
+  .object({
+    username: z
+      .string()
+      .trim()
+      .min(2, "Username must be at least 2 characters")
+      .max(20, "Username must be no more than 20 characters")
+      .toLowerCase(),
+    email: z.string().trim().email(),
+    mobile: z
+      .string()
+      .regex(
+        /^(\+?91|0)?[6-9]\d{9}$/,
+        "Please enter a valid Indian mobile number"
+      ),
+    password: passwordSchema,
+    confirmPassword: passwordSchema,
+  })
+  .refine(data => data.password === data.confirmPassword, {
+    message: "Passwords don't match",
+    path: ["confirmPassword"], // This tells Zod to add the error on confirmPassword field
+  })
 
 export const loginSchema = z.object({
   emailOrMobile: z.string().refine(
