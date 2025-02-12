@@ -7,7 +7,7 @@ type HttpMethod = "get" | "post" | "put" | "delete" | "patch"
 const axiosInstance = axios.create({
   baseURL: conf.backendURL,
   headers: { "Content-Type": "application/json" }, // default for post requests without files i.e, simple objects
-  timeout: 15000,
+  timeout: 5000,
 })
 
 axiosRetry(axiosInstance, { retries: 2 })

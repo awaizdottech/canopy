@@ -59,7 +59,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: "temp",
+        path: "/register",
         element: <Register />,
       },
     ],

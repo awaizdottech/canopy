@@ -1,18 +1,23 @@
 import { create } from "zustand"
 import { devtools, persist } from "zustand/middleware"
 
+type userType = {
+  username: string
+  email: string
+  mobile: string
+  tokens: {}
+  cart: string[]
+  orders: string[]
+  role: "admin" | "customer"
+}
+
 type userStoreType = {
-  user: {
-    username: string
-    mobile: number
-    tokens: {}
-    authStatus: boolean
-    cart: string[]
-    orders: []
-  }
-  loginUser(): void
+  user: userType
+  authStatus: boolean
+  loginUser(user: userType): void
   logoutUser(): void
   addToCart(productId: string): void
+  addToOrders(products: string[]): void
 }
 
 const useUserStore = create<userStoreType>()(
@@ -21,20 +26,51 @@ const useUserStore = create<userStoreType>()(
       set => ({
         user: {
           username: "",
-          mobile: 0,
+          email: "",
+          mobile: "",
           tokens: {},
-          authStatus: false,
           cart: [],
           orders: [],
+          role: "customer",
         },
-        loginUser: () =>
-          set(state => ({ user: { ...state.user, authStatus: true } })),
+        authStatus: false,
+        loginUser: (user: userType) =>
+          set(
+            state => ({
+              authStatus: true,
+              user: { ...state.user, ...user },
+            }),
+            false,
+            "loginUser"
+          ),
         logoutUser: () =>
-          set(state => ({ user: { ...state.user, authStatus: false } })),
+          set(
+            state => ({
+              authStatus: false,
+              user: { ...state.user, cart: [], orders: [] },
+            }),
+            false,
+            "logoutUser"
+          ),
         addToCart: (productId: string) =>
-          set(state => ({
-            user: { ...state.user, cart: [...state.user.cart, productId] },
-          })),
+          set(
+            state => ({
+              user: { ...state.user, cart: [...state.user.cart!, productId] },
+            }),
+            false,
+            "addToCart"
+          ),
+        addToOrders: (products: string[]) =>
+          set(
+            state => ({
+              user: {
+                ...state.user,
+                orders: [...state.user.orders!, ...products],
+              },
+            }),
+            false,
+            "addToOrders"
+          ),
       }),
       {
         name: "canopyUser",

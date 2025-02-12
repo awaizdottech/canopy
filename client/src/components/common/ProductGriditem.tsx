@@ -1,10 +1,11 @@
-import { styled } from "@mui/material/styles"
-import Paper from "@mui/material/Paper"
-import Card from "@mui/material/Card"
-import CardContent from "@mui/material/CardContent"
-import CardMedia from "@mui/material/CardMedia"
-import Typography from "@mui/material/Typography"
-import { Link } from "react-router"
+import {
+  Card,
+  CardContent,
+  CardMedia,
+  Paper,
+  styled,
+  Typography,
+} from "@mui/material"
 
 export type productType = {
   id: string
@@ -30,31 +31,29 @@ const ProductGriditem = ({ product }: { product: productType }) => {
   console.log("product grid item rendered")
 
   return (
-    <Link to={`/product/${product.id}`}>
-      <Griditem>
-        <Card sx={{ maxWidth: 345 }}>
-          <CardMedia
-            sx={{ height: 140 }}
-            image={product.images[0]}
-            title="green iguana"
-          />
-          <CardContent>
-            <Typography gutterBottom variant="h5" component="div">
-              {product.title}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Rating: {product.rating}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              {product.availabilityStatus}
-            </Typography>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              Price: ${product.price}
-            </Typography>
-          </CardContent>
-        </Card>
-      </Griditem>
-    </Link>
+    <Griditem>
+      <Card sx={{ maxWidth: 345 }}>
+        <CardMedia
+          sx={{ height: 140 }}
+          image={product.images[0]}
+          title="green iguana"
+        />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="div">
+            {product.title}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Rating: {product.rating}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            {product.availabilityStatus}
+          </Typography>
+          <Typography variant="body2" sx={{ color: "text.secondary" }}>
+            Price: ${product.price}
+          </Typography>
+        </CardContent>
+      </Card>
+    </Griditem>
   )
 }
 

@@ -11,7 +11,7 @@ const useProductStore = create<userStoreType>()(
   devtools(set => ({
     products: [],
     addProducts: (products: productType[]) =>
-      set(() => ({ products: [...products] })),
+      set(() => ({ products: [...products] }), false, "addProducts"),
   }))
 )
 

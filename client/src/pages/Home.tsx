@@ -1,7 +1,7 @@
-import Box from "@mui/material/Box"
-import Grid from "@mui/material/Grid2"
+import { Box, Grid2 as Grid } from "@mui/material"
 import { ProductGriditem } from "../components"
 import useProductStore from "../store/products-store"
+import { Link } from "react-router"
 
 const Home = () => {
   console.log("home rendered")
@@ -17,7 +17,9 @@ const Home = () => {
           columns={{ xs: 4, sm: 8, md: 12 }}>
           {products?.map(product => (
             <Grid key={product.id} size={{ xs: 2, sm: 4, md: 3 }}>
-              <ProductGriditem product={product} />
+              <Link to={`/product/${product.id}`}>
+                <ProductGriditem product={product} />
+              </Link>
             </Grid>
           ))}
         </Grid>

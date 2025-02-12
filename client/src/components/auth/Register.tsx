@@ -5,12 +5,15 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { registerSchema } from "../../schemas/auth.schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { superAxios } from "../../utils"
+import useUserStore from "../../store/user-store"
+import { useNavigate } from "react-router"
 
-type registerInputsType = z.infer<typeof registerSchema>
+export type registerInputsType = z.infer<typeof registerSchema>
 
 const Register = () => {
   console.log("register rendered")
-
+  const navigate = useNavigate()
   const {
     register,
     handleSubmit,
@@ -19,10 +22,33 @@ const Register = () => {
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
   })
-  console.log("register rendering", errors)
-  const registerUser = (data: registerInputsType) => {
+  const loginUser = useUserStore(state => state.loginUser)
+  const cart = useUserStore(state => state.user.cart)
+  const orders = useUserStore(state => state.user.orders)
+
+  const registerUser = async (data: registerInputsType) => {
+    const { confirmPassword, ...rest } = data
     try {
-      console.log(data)
+      if (localStorage.getItem("admin") == data.email)
+        loginUser({
+          ...rest,
+          role: "admin",
+          tokens: {},
+          cart: [...cart],
+          orders: [...orders],
+        })
+      else {
+        const response = await superAxios("post", "/users/add", data)
+        console.log(response.data) // TODO
+        loginUser({
+          ...rest,
+          role: "customer",
+          tokens: {},
+          cart: [...cart],
+          orders: [...orders],
+        })
+      }
+      navigate(-1) // TODO
     } catch (error) {
       console.error(error)
     }
@@ -57,14 +83,14 @@ const Register = () => {
         error={Boolean(errors.mobile)}
       />
       <PasswordInput
-        {...register("password")}
+        register={register}
         helperText={errors.password?.message}
         error={Boolean(errors.password)}
       />
       <PasswordInput
+        register={register}
         label="Confirm Password"
         id="confirmPassword"
-        {...register("confirmPassword")}
         helperText={errors.confirmPassword?.message}
         error={Boolean(errors.confirmPassword)}
       />

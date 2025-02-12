@@ -14,10 +14,7 @@ const ProductDetails = () => {
   const addToCart = useUserStore(state => state.addToCart)
   const cart = useUserStore(state => state.user.cart)
 
-  const handleAddToCart = useCallback(
-    () => addToCart(product.id),
-    [product, addToCart]
-  )
+  const handleAddToCart = useCallback(() => addToCart(product.id), [product])
 
   return (
     <>

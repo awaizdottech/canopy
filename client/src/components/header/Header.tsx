@@ -5,16 +5,17 @@ import {
   IconButton,
   Typography,
   Badge,
-  MenuItem,
-  Menu,
 } from "@mui/material"
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
+import LoginIcon from "@mui/icons-material/Login"
 import MoreIcon from "@mui/icons-material/MoreVert"
 import { useCallback, useState } from "react"
 import Search from "./Search"
 import useUserStore from "../../store/user-store"
 import { Link } from "react-router"
+import MobileMenu from "./MobileMenu"
+import AvatarMenu from "./AvatarMenu"
 
 const Header = () => {
   console.log("header rendered")
@@ -23,9 +24,9 @@ const Header = () => {
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null)
   const cartCount = useUserStore(state => state.user.cart.length)
-
-  const isMenuOpen = Boolean(anchorEl)
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
+  const authStatus = useUserStore(state => state.authStatus)
+  const menuId: string = "primary-search-account-menu"
+  const mobileMenuId: string = "primary-search-account-menu-mobile"
 
   const handleProfileMenuOpen = useCallback(
     (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget),
@@ -37,80 +38,11 @@ const Header = () => {
     []
   )
 
-  const handleMenuClose = useCallback(() => {
-    setAnchorEl(null)
-    handleMobileMenuClose()
-  }, [])
-
   const handleMobileMenuOpen = useCallback(
     (event: React.MouseEvent<HTMLElement>) =>
       setMobileMoreAnchorEl(event.currentTarget),
     []
   )
-
-  const menuId = "primary-search-account-menu"
-  const renderMenu = // menu on avatar click
-    (
-      <Menu
-        anchorEl={anchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        id={menuId}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={isMenuOpen}
-        onClose={handleMenuClose}>
-        <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
-        <MenuItem onClick={handleMenuClose}>My account</MenuItem>
-      </Menu>
-    )
-
-  const mobileMenuId = "primary-search-account-menu-mobile"
-  const renderMobileMenu = // menu on three dot click
-    (
-      <Menu
-        anchorEl={mobileMoreAnchorEl}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        id={mobileMenuId}
-        keepMounted
-        transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-        open={isMobileMenuOpen}
-        onClose={handleMobileMenuClose}>
-        <MenuItem>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit">
-            <Badge badgeContent={4} color="error">
-              <ShoppingCartIcon />
-            </Badge>
-          </IconButton>
-          <p>Messages</p>
-        </MenuItem>
-        <MenuItem onClick={handleProfileMenuOpen}>
-          <IconButton
-            size="large"
-            aria-label="account of current user"
-            aria-controls="primary-search-account-menu"
-            aria-haspopup="true"
-            color="inherit">
-            <AccountCircle />
-          </IconButton>
-          <p>Profile</p>
-        </MenuItem>
-      </Menu>
-    )
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -120,8 +52,8 @@ const Header = () => {
             <Typography
               variant="h6"
               noWrap
-              component="div"
-              sx={{ display: { xs: "none", sm: "block" } }}>
+              sx={{ display: { xs: "none", sm: "block" } }}
+              color="textPrimary">
               Canopy
             </Typography>
           </Link>
@@ -129,25 +61,30 @@ const Header = () => {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <Link to="/cart">
-              <IconButton
-                size="large"
-                aria-label="show 4 new mails"
-                color="inherit">
+              <IconButton size="large" aria-label="show cart">
                 <Badge badgeContent={cartCount} color="error">
                   <ShoppingCartIcon />
                 </Badge>
               </IconButton>
             </Link>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={menuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit">
-              <AccountCircle />
-            </IconButton>
+            {authStatus ? (
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={menuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                color="inherit">
+                <AccountCircle />
+              </IconButton>
+            ) : (
+              <Link to="/register">
+                <IconButton size="large" edge="end" aria-label="login button">
+                  <LoginIcon />
+                </IconButton>
+              </Link>
+            )}
           </Box>
           <Box sx={{ display: { xs: "flex", md: "none" } }}>
             <IconButton
@@ -162,8 +99,18 @@ const Header = () => {
           </Box>
         </Toolbar>
       </AppBar>
-      {renderMobileMenu}
-      {renderMenu}
+      <MobileMenu
+        mobileMoreAnchorEl={mobileMoreAnchorEl}
+        mobileMenuId={mobileMenuId}
+        handleProfileMenuOpen={handleProfileMenuOpen}
+        handleMobileMenuClose={handleMobileMenuClose}
+      />
+      <AvatarMenu
+        anchorEl={anchorEl}
+        handleMobileMenuClose={handleMobileMenuClose}
+        menuId={menuId}
+        setAnchorEl={setAnchorEl}
+      />
     </Box>
   )
 }

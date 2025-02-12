@@ -1,11 +1,16 @@
-import React from "react"
+import { Navigate } from "react-router"
+import useUserStore from "../store/user-store"
 
-interface AdminCheckProps {
-  children: React.ReactNode
-}
+const AdminCheck = ({ children }: { children: React.ReactNode }) => {
+  const authStatus = useUserStore(state => state.authStatus)
+  const role = useUserStore(state => state.user.role)
+  console.log("adminckeck ran", authStatus)
 
-const AdminCheck = ({ children }: AdminCheckProps) => {
-  return <div>{children}</div>
+  return authStatus && role ? (
+    <div>{children}</div>
+  ) : (
+    <Navigate to="/register" />
+  )
 }
 
 export default AdminCheck

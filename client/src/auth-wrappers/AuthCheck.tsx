@@ -1,11 +1,12 @@
-import React from "react"
+import { ReactNode } from "react"
+import useUserStore from "../store/user-store"
+import { Navigate } from "react-router"
 
-interface AuthCheckProps {
-  children: React.ReactNode
-}
+const AuthCheck = ({ children }: { children: ReactNode }) => {
+  const authStatus = useUserStore(state => state.authStatus)
+  console.log("authckeck ran", authStatus)
 
-const AuthCheck = ({ children }: AuthCheckProps) => {
-  return <div>{children}</div>
+  return authStatus ? <div>{children}</div> : <Navigate to="/register" />
 }
 
 export default AuthCheck
