@@ -5,11 +5,11 @@ import { ProductGriditem } from "../components"
 const AdminPortal = () => {
   console.log("admin portal ran")
 
-  if (localStorage.getItem("totalOrders")) {
-    const totalOrders = JSON.parse(localStorage.getItem("totalOrders")!)
+  if (localStorage.getItem("allOrders")) {
+    const allOrders = JSON.parse(localStorage.getItem("allOrders")!)
     const allProducts = useProductStore(state => state.products)
     const orderedItems = allProducts.filter(product =>
-      Object.keys(totalOrders).includes(String(product.id))
+      Object.keys(allOrders).includes(String(product.id))
     )
 
     return (
@@ -18,11 +18,11 @@ const AdminPortal = () => {
           <Box component="div" key={product.id}>
             <p>
               users:
-              {totalOrders[product.id].map((user: string) => (
+              {allOrders[product.id].map((user: string) => (
                 <span> {user}</span>
               ))}
             </p>
-            <p>count: {totalOrders[product.id].length}</p>
+            <p>count: {allOrders[product.id].length}</p>
             <ProductGriditem product={product} />
           </Box>
         ))}

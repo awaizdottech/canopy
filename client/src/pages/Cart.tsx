@@ -13,15 +13,16 @@ const Cart = () => {
   const cartItemIDs = useUserStore(state => state.user.cart)
   const allProducts = useProductStore(state => state.products)
   const addToOrders = useUserStore(state => state.addToOrders)
+  const removeFromCart = useUserStore(state => state.removeFromCart)
+  const navigate = useNavigate()
   const cartItems = allProducts.filter(product =>
     cartItemIDs.includes(product.id)
   )
-  const navigate = useNavigate()
 
   const checkout = useCallback(() => {
     navigate("/checkout")
     addToOrders(cartItemIDs)
-  }, [])
+  }, [cartItemIDs])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -34,6 +35,9 @@ const Cart = () => {
             <Link to={`/product/${product.id}`}>
               <ProductGriditem product={product} />
             </Link>
+            <Button color="error" onClick={() => removeFromCart(product.id)}>
+              remove
+            </Button>
           </Grid>
         ))}
       </Grid>

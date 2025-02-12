@@ -17,7 +17,10 @@ type userStoreType = {
   loginUser(user: userType): void
   logoutUser(): void
   addToCart(productId: string): void
+  removeFromCart(productId: string): void
   addToOrders(products: string[]): void
+  removeFromOrders(productsId: string): void
+  emptyPlacedOrders(): void
 }
 
 const useUserStore = create<userStoreType>()(
@@ -60,6 +63,17 @@ const useUserStore = create<userStoreType>()(
             false,
             "addToCart"
           ),
+        removeFromCart: (productId: string) =>
+          set(
+            state => ({
+              user: {
+                ...state.user,
+                cart: state.user.cart.filter(id => id !== productId),
+              },
+            }),
+            false,
+            "removeFromCart"
+          ),
         addToOrders: (products: string[]) =>
           set(
             state => ({
@@ -71,10 +85,32 @@ const useUserStore = create<userStoreType>()(
             false,
             "addToOrders"
           ),
+        removeFromOrders: (productId: string) =>
+          set(
+            state => ({
+              user: {
+                ...state.user,
+                orders: state.user.orders.filter(id => id !== productId),
+              },
+            }),
+            false,
+            "removeFromOrders"
+          ),
+        emptyPlacedOrders: () =>
+          set(
+            state => ({
+              user: {
+                ...state.user,
+                orders: [],
+              },
+            }),
+            false,
+            "emptyPlacedOrders"
+          ),
       }),
       {
         name: "canopyUser",
-        partialize: state => ({ tokens: state.user.tokens }),
+        // partialize: state => ({ tokens: state.user.tokens }),
       }
     )
   )

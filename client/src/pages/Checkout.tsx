@@ -5,36 +5,42 @@ import useProductStore from "../store/products-store"
 import useUserStore from "../store/user-store"
 import { ProductGriditem } from "../components"
 import { useCallback } from "react"
+import { useNavigate } from "react-router"
 
 const Checkout = () => {
   console.log("cart rendered")
 
   const { username, orders: orderItemIDs } = useUserStore(state => state.user)
+  const removeFromOrders = useUserStore(state => state.removeFromOrders)
+  const emptyPlacedOrders = useUserStore(state => state.emptyPlacedOrders)
   const allProducts = useProductStore(state => state.products)
+  const navigate = useNavigate()
   const orderItems = allProducts.filter(product =>
     orderItemIDs.includes(product.id)
   )
 
   const confirmOrder = useCallback(() => {
     try {
-      if (localStorage.getItem("totalOrders")) {
-        const totalOrders = JSON.parse(localStorage.getItem("totalOrders")!)
+      if (localStorage.getItem("allOrders")) {
+        const allOrders = JSON.parse(localStorage.getItem("allOrders")!)
         orderItemIDs.forEach(orderId => {
-          if (totalOrders[orderId]) totalOrders[orderId].push(username)
-          else totalOrders[orderId] = [username]
+          if (allOrders[orderId]) allOrders[orderId].push(username)
+          else allOrders[orderId] = [username]
         })
-        localStorage.setItem("totalOrders", JSON.stringify(totalOrders))
+        localStorage.setItem("allOrders", JSON.stringify(allOrders))
       } else {
-        const totalOrders: { [key: string]: string[] } = {}
-        orderItemIDs.forEach(orderId => (totalOrders[orderId] = [username]))
-        localStorage.setItem("totalOrders", JSON.stringify(totalOrders))
+        const allOrders: { [key: string]: string[] } = {}
+        orderItemIDs.forEach(orderId => (allOrders[orderId] = [username]))
+        localStorage.setItem("allOrders", JSON.stringify(allOrders))
       }
-      alert("order confirmed")
+      alert("orders placed")
+      emptyPlacedOrders()
+      navigate("/")
     } catch (error) {
       console.error("Error updating orders:", error)
       alert("Error updating orders:")
     }
-  }, [])
+  }, [orderItemIDs, username])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -45,6 +51,9 @@ const Checkout = () => {
         {orderItems?.map(product => (
           <Grid key={product.id} size={{ xs: 2, sm: 4, md: 3 }}>
             <ProductGriditem product={product} />
+            <Button color="error" onClick={() => removeFromOrders(product.id)}>
+              remove
+            </Button>
           </Grid>
         ))}
       </Grid>

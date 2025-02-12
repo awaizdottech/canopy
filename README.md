@@ -1,3 +1,5 @@
+# RESEARCH & PUT ON PAPER BEFORE JUMPING ON KEYBOARD
+
 E-Commerce Application - React.js Training Project <br>
 Objective <br>
 
