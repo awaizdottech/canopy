@@ -20,6 +20,7 @@ const AvatarMenu = ({
 
   const handleLogout = useCallback(() => {
     logout()
+    sessionStorage.clear()
     handleMenuClose()
   }, [])
 

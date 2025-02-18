@@ -2,32 +2,43 @@ import { useParams } from "react-router"
 import useProductStore from "../store/products-store"
 import { ProductGriditem } from "../components"
 import Button from "@mui/material/Button"
+import { useEffect, useState } from "react"
+import { getProducts } from "../services/products.services"
 import useUserStore from "../store/user-store"
-import { useCallback } from "react"
 
 const ProductDetails = () => {
   console.log("product details rendered")
   const { id } = useParams()
-  const product = useProductStore(
-    state => state.products.filter(product => product.id == id)[0]
+  const [error, setError] = useState(false)
+  const product = useProductStore(state => state.products).get(
+    Number(id) ?? null
   )
+  const cartItemIDs = useUserStore(state => state.user.cart)
   const addToCart = useUserStore(state => state.addToCart)
-  const cart = useUserStore(state => state.user.cart)
 
-  const handleAddToCart = useCallback(() => addToCart(product.id), [product])
+  useEffect(() => {
+    try {
+      if (!product) getProducts(Number(id))
+    } catch (error: any) {
+      setError(error)
+    }
+  }, [])
 
-  return (
-    <>
-      <ProductGriditem product={product} />
-      <Button
-        variant="contained"
-        size="medium"
-        onClick={handleAddToCart}
-        disabled={cart.includes(product.id)}>
-        {cart.includes(product.id) ? "Already in Cart" : "Add to Cart"}
-      </Button>
-    </>
-  )
+  if (!product) return <>Loading...</>
+  else if (error) return <>Something went wrong</>
+  else
+    return (
+      <>
+        <ProductGriditem product={product} />
+        <Button
+          variant="contained"
+          size="medium"
+          onClick={() => addToCart(product.id)}
+          disabled={cartItemIDs.includes(product.id)}>
+          {cartItemIDs.includes(product.id) ? "Already in Cart" : "Add to Cart"}
+        </Button>
+      </>
+    )
 }
 
 export default ProductDetails

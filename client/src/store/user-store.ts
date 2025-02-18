@@ -6,20 +6,20 @@ type userType = {
   email: string
   mobile: string
   tokens: {}
-  cart: string[]
-  orders: string[]
+  cart: number[]
+  orders: number[]
   role: "admin" | "customer"
 }
 
 type userStoreType = {
   user: userType
   authStatus: boolean
-  loginUser(user: userType): void
-  logoutUser(): void
-  addToCart(productId: string): void
-  removeFromCart(productId: string): void
-  addToOrders(products: string[]): void
-  removeFromOrders(productsId: string): void
+  // loginUser(user: userType): void
+  // logoutUser(): void
+  addToCart(productId: number): void
+  removeFromCart(productId: number): void
+  addToOrders(products: number[]): void
+  removeFromOrders(productsId: number): void
   emptyPlacedOrders(): void
 }
 
@@ -28,34 +28,42 @@ const useUserStore = create<userStoreType>()(
     persist(
       set => ({
         user: {
-          username: "",
-          email: "",
-          mobile: "",
-          tokens: {},
+          username: "dummy",
+          email: "dummy",
+          mobile: "dummy",
           cart: [],
+          tokens: {},
           orders: [],
           role: "customer",
         },
         authStatus: false,
-        loginUser: (user: userType) =>
-          set(
-            state => ({
-              authStatus: true,
-              user: { ...state.user, ...user },
-            }),
-            false,
-            "loginUser"
-          ),
-        logoutUser: () =>
-          set(
-            state => ({
-              authStatus: false,
-              user: { ...state.user, cart: [], orders: [] },
-            }),
-            false,
-            "logoutUser"
-          ),
-        addToCart: (productId: string) =>
+        // loginUser: (user: userType) =>
+        //   set(
+        //     {
+        //       authStatus: true,
+        //       user: user,
+        //     },
+        //     false,
+        //     "loginUser"
+        //   ),
+        // logoutUser: () =>
+        //   set(
+        //     {
+        //       authStatus: false,
+        //       user: {
+        //         username: "dummy",
+        //         email: "dummy",
+        //         mobile: "dummy",
+        //         cart: [],
+        //         tokens: {},
+        //         orders: [],
+        //         role: "customer",
+        //       },
+        //     },
+        //     false,
+        //     "logoutUser"
+        //   ),
+        addToCart: (productId: number) =>
           set(
             state => ({
               user: { ...state.user, cart: [...state.user.cart!, productId] },
@@ -63,7 +71,7 @@ const useUserStore = create<userStoreType>()(
             false,
             "addToCart"
           ),
-        removeFromCart: (productId: string) =>
+        removeFromCart: (productId: number) =>
           set(
             state => ({
               user: {
@@ -74,18 +82,18 @@ const useUserStore = create<userStoreType>()(
             false,
             "removeFromCart"
           ),
-        addToOrders: (products: string[]) =>
+        addToOrders: (products: number[]) =>
           set(
             state => ({
               user: {
                 ...state.user,
-                orders: [...state.user.orders!, ...products],
+                orders: [...state.user.orders, ...products],
               },
             }),
             false,
             "addToOrders"
           ),
-        removeFromOrders: (productId: string) =>
+        removeFromOrders: (productId: number) =>
           set(
             state => ({
               user: {
@@ -110,7 +118,10 @@ const useUserStore = create<userStoreType>()(
       }),
       {
         name: "canopyUser",
-        // partialize: state => ({ tokens: state.user.tokens }),
+        partialize: state => ({
+          tokens: state.user.tokens,
+          cart: state.user.cart,
+        }),
       }
     )
   )
