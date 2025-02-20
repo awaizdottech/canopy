@@ -29,7 +29,7 @@ const ProductDetails = () => {
   else if (error) return <>Something went wrong</>
   else
     return (
-      <>
+      <Box sx={{ flexGrow: 1 }}>
         <ProductGriditem product={product} />
         <Button
           variant="contained"
@@ -44,7 +44,7 @@ const ProductDetails = () => {
           <p>Stock: {product.stock}</p>
           <p>{product.description}</p>
         </Box>
-      </>
+      </Box>
     )
 }
 
