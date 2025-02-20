@@ -1,6 +1,6 @@
 export { default as Header } from "./header/Header"
 export { default as Footer } from "./footer/Footer"
-export { default as Login } from "./auth/Login"
-export { default as Register } from "./auth/Register"
+export { default as Login } from "./auth/login/Login"
+export { default as Register } from "./auth/register/Register"
 export { default as AuthPopup } from "./auth/AuthPopup"
 export { default as ProductGriditem } from "./common/ProductGriditem"

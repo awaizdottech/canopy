@@ -30,21 +30,8 @@ export const registerSchema = z
   })
   .refine(data => data.password === data.confirmPassword, {
     message: "Passwords don't match",
-    path: ["confirmPassword"], // This tells Zod to add the error on confirmPassword field
+    path: ["confirmPassword"],
   })
-
-// export const loginSchema = z.object({
-//   emailOrMobile: z.string().refine(
-//     value => {
-//       const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-//       const mobileRegex = /^(\+?91|0)?[6-9]\d{9}$/
-
-//       return emailRegex.test(value) || mobileRegex.test(value)
-//     },
-//     { message: "Must be a valid email address or 10-digit mobile number" }
-//   ),
-//   password: passwordSchema,
-// })
 
 export const loginSchema = z.discriminatedUnion("loginType", [
   z.object({

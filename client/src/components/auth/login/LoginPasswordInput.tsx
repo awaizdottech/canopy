@@ -8,33 +8,30 @@ import Visibility from "@mui/icons-material/Visibility"
 import VisibilityOff from "@mui/icons-material/VisibilityOff"
 import FormHelperText from "@mui/material/FormHelperText"
 import { UseFormRegister } from "react-hook-form"
-import { registerInputsType } from "./Register"
+import { loginInputsType } from "./Login"
 
 type propsType = {
   label?: string
-  id?: "password" | "confirmPassword"
+  id?: "password"
   helperText?: string
   error?: boolean
-  register: UseFormRegister<registerInputsType>
+  register: UseFormRegister<loginInputsType>
 }
 
-const PasswordInput = ({
-  label = "Password",
-  id = "password",
-  helperText,
-  error,
-  register,
-}: propsType) => {
+const LoginPasswordInput = ({ helperText, error, register }: propsType) => {
   console.log("password input rendering")
   const [showPassword, setShowPassword] = useState(false)
+
   const handleClickShowPassword = useCallback(
     () => setShowPassword(show => !show),
     []
   )
+
   const handleMouseDownPassword = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault(),
     []
   )
+
   const handleMouseUpPassword = useCallback(
     (event: React.MouseEvent<HTMLButtonElement>) => event.preventDefault(),
     []
@@ -42,11 +39,11 @@ const PasswordInput = ({
 
   return (
     <FormControl sx={{ m: 1, width: "25ch" }} variant="standard" error={error}>
-      <InputLabel htmlFor={id}>{label}</InputLabel>
+      <InputLabel htmlFor="password">Password</InputLabel>
       <Input
-        id={id}
+        id="password"
         type={showPassword ? "text" : "password"}
-        {...register(id)}
+        {...register("password")}
         endAdornment={
           <InputAdornment position="end">
             <IconButton
@@ -66,4 +63,4 @@ const PasswordInput = ({
   )
 }
 
-export default PasswordInput
+export default LoginPasswordInput

@@ -6,7 +6,7 @@ type HttpMethod = "get" | "post" | "put" | "delete" | "patch"
 
 const axiosInstance = axios.create({
   baseURL: conf.backendURL,
-  headers: { "Content-Type": "application/json" }, // default for post requests without files i.e, simple objects
+  headers: { "Content-Type": "application/json" },
   timeout: 5000,
 })
 

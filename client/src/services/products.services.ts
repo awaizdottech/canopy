@@ -14,6 +14,7 @@ export const getProducts = async (id?: number) => {
         false,
         "addProduct"
       )
+      return response.data
     } else {
       const response = await superAxios("get", "/products")
       useProductStore.setState(

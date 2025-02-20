@@ -1,6 +1,6 @@
-import { loginInputsType } from "../components/auth/Login"
-import { registerInputsType } from "../components/auth/Register"
-import useProductStore from "../store/products-store"
+import { loginInputsType } from "../components/auth/login/Login"
+import { registerInputsType } from "../components/auth/register/Register"
+import useProductStore, { productType } from "../store/products-store"
 import useUserStore from "../store/user-store"
 import { superAxios } from "../utils"
 
@@ -47,27 +47,16 @@ export const loginUser = async (data: loginInputsType) => {
   }
 }
 
-// export const getCart = () => {
-//   // in both header & product details components I dont have to implement this kinda logic but because I'm using this basically static function I'm not able to do stuff dynamically like not able to update badge on cart icon, not able to disable & change add to cart button etc
-//   if (useUserStore.getState().authStatus)
-//     return useUserStore.getState().user?.cart
-//   return JSON.parse(sessionStorage.getItem("cart") || "[]")
-// }
-
-// export const addToCart = (productId: string) => {
-//   if (useUserStore.getState().authStatus) {
-//     useUserStore.setState(state => ({
-//       user: { ...state.user!, cart: [...state.user!.cart, productId] },
-//     }))
-//   } else {
-//     const cart = JSON.parse(sessionStorage.getItem("cart") || "[]")
-//     cart.push(productId)
-//     sessionStorage.setItem("cart", JSON.stringify(cart))
-//   }
-// }
-
 export const getCartItems = (cartItemsIDs: number[]) => {
   return cartItemsIDs.map(id => useProductStore.getState().products.get(id))
+}
+
+export const getCartItemsTotal = (cartItems: productType[]) => {
+  return cartItems.reduce((total, product) => {
+    if (product.availabilityStatus !== "Out of Stock")
+      return total + product.price
+    else return total
+  }, 0)
 }
 
 export const getOrderItems = (orderItemsIDs: number[]) => {
@@ -103,5 +92,16 @@ export const confirmOrder = (orderItemsIDs: number[], username: string) => {
   } catch (error) {
     console.error("Error updating orders:", error)
     alert("Error updating orders:")
+  }
+}
+
+export const getOrderedItems = () => {
+  const allOrders = JSON.parse(localStorage.getItem("allOrders") ?? "[]")
+  const allOrdersIDs = Object.keys(allOrders)
+  return {
+    orderedItems: allOrdersIDs.map((orderId: string) =>
+      useProductStore.getState().products.get(Number(orderId))
+    ),
+    allOrders,
   }
 }

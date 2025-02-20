@@ -1,20 +1,16 @@
 import Box from "@mui/material/Box"
-import useProductStore from "../store/products-store"
 import { ProductGriditem } from "../components"
+import { getOrderedItems } from "../services/user.services"
 
 const AdminPortal = () => {
   console.log("admin portal ran")
 
-  if (localStorage.getItem("allOrders")) {
-    const allOrders = JSON.parse(localStorage.getItem("allOrders")!)
-    const allProducts = useProductStore(state => state.products)
-    const orderedItems = allProducts.filter(product =>
-      Object.keys(allOrders).includes(String(product.id))
-    )
+  const { orderedItems, allOrders } = getOrderedItems()
 
-    return (
-      <>
-        {orderedItems?.map(product => (
+  return (
+    <>
+      {orderedItems.map(product =>
+        product ? (
           <Box component="div" key={product.id}>
             <p>
               users:
@@ -25,10 +21,10 @@ const AdminPortal = () => {
             <p>count: {allOrders[product.id].length}</p>
             <ProductGriditem product={product} />
           </Box>
-        ))}
-      </>
-    )
-  } else return <>no orders placed</>
+        ) : null
+      )}
+    </>
+  )
 }
 
 export default AdminPortal

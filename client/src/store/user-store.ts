@@ -14,8 +14,7 @@ type userType = {
 type userStoreType = {
   user: userType
   authStatus: boolean
-  // loginUser(user: userType): void
-  // logoutUser(): void
+  logoutUser(): void
   addToCart(productId: number): void
   removeFromCart(productId: number): void
   addToOrders(products: number[]): void
@@ -37,32 +36,23 @@ const useUserStore = create<userStoreType>()(
           role: "customer",
         },
         authStatus: false,
-        // loginUser: (user: userType) =>
-        //   set(
-        //     {
-        //       authStatus: true,
-        //       user: user,
-        //     },
-        //     false,
-        //     "loginUser"
-        //   ),
-        // logoutUser: () =>
-        //   set(
-        //     {
-        //       authStatus: false,
-        //       user: {
-        //         username: "dummy",
-        //         email: "dummy",
-        //         mobile: "dummy",
-        //         cart: [],
-        //         tokens: {},
-        //         orders: [],
-        //         role: "customer",
-        //       },
-        //     },
-        //     false,
-        //     "logoutUser"
-        //   ),
+        logoutUser: () =>
+          set(
+            {
+              authStatus: false,
+              user: {
+                username: "dummy",
+                email: "dummy",
+                mobile: "dummy",
+                cart: [],
+                tokens: {},
+                orders: [],
+                role: "customer",
+              },
+            },
+            false,
+            "logoutUser"
+          ),
         addToCart: (productId: number) =>
           set(
             state => ({
@@ -119,7 +109,6 @@ const useUserStore = create<userStoreType>()(
       {
         name: "canopyUser",
         partialize: state => ({
-          tokens: state.user.tokens,
           cart: state.user.cart,
         }),
       }

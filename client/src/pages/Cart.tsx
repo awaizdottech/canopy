@@ -5,7 +5,8 @@ import useUserStore from "../store/user-store"
 import { ProductGriditem } from "../components"
 import { Link, useNavigate } from "react-router"
 import { useCallback } from "react"
-import { getCartItems } from "../services/user.services"
+import { getCartItems, getCartItemsTotal } from "../services/user.services"
+import { productType } from "../store/products-store"
 
 const Cart = () => {
   console.log("cart rendered")
@@ -14,6 +15,9 @@ const Cart = () => {
   const navigate = useNavigate()
   const cartItemIDs = useUserStore(state => state.user.cart)
   const cartItems = getCartItems(cartItemIDs)
+  const cartTotal = getCartItemsTotal(
+    cartItems?.filter((item): item is productType => item !== undefined) ?? []
+  )
   console.log("cartItems", cartItems)
 
   const checkout = useCallback(() => {
@@ -40,6 +44,7 @@ const Cart = () => {
           ) : null
         )}
       </Grid>
+      <Box>Total: ${Math.ceil(cartTotal)}</Box>
       <Button onClick={checkout}>Checkout</Button>
     </Box>
   )

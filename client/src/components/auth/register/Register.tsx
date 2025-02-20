@@ -1,13 +1,13 @@
 import TextField from "@mui/material/TextField"
 import Button from "@mui/material/Button"
-import PasswordInput from "./PasswordInput"
+import RegisterPasswordInput from "./RegisterPasswordInput"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { loginSchema, registerSchema } from "../../schemas/auth.schemas"
+import { registerSchema } from "../../../schemas/auth.schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { loginUser } from "../../services/user.services"
+import { registerAndLoginUser } from "../../../services/user.services"
 
-export type loginInputsType = z.infer<typeof loginSchema>
+export type registerInputsType = z.infer<typeof registerSchema>
 
 const Register = () => {
   console.log("register rendered")
@@ -15,13 +15,21 @@ const Register = () => {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<loginInputsType>({
+  } = useForm<registerInputsType>({
     resolver: zodResolver(registerSchema),
     mode: "onTouched",
   })
 
   return (
-    <form onSubmit={handleSubmit(loginUser)}>
+    <form onSubmit={handleSubmit(registerAndLoginUser)}>
+      <TextField
+        id="username"
+        label="Username"
+        variant="standard"
+        {...register("username")}
+        helperText={errors.username?.message}
+        error={Boolean(errors.username)}
+      />
       <TextField
         id="email"
         type="email"
@@ -40,10 +48,17 @@ const Register = () => {
         helperText={errors.mobile?.message}
         error={Boolean(errors.mobile)}
       />
-      <PasswordInput
+      <RegisterPasswordInput
         register={register}
         helperText={errors.password?.message}
         error={Boolean(errors.password)}
+      />
+      <RegisterPasswordInput
+        register={register}
+        label="Confirm Password"
+        id="confirmPassword"
+        helperText={errors.confirmPassword?.message}
+        error={Boolean(errors.confirmPassword)}
       />
       <Button variant="contained" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Loading..." : "Register"}

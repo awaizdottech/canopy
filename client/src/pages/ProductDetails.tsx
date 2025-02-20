@@ -5,6 +5,7 @@ import Button from "@mui/material/Button"
 import { useEffect, useState } from "react"
 import { getProducts } from "../services/products.services"
 import useUserStore from "../store/user-store"
+import { Box } from "@mui/material"
 
 const ProductDetails = () => {
   console.log("product details rendered")
@@ -37,6 +38,12 @@ const ProductDetails = () => {
           disabled={cartItemIDs.includes(product.id)}>
           {cartItemIDs.includes(product.id) ? "Already in Cart" : "Add to Cart"}
         </Button>
+        <Box>
+          <p>Category: {product.category}</p>
+          <p>Brand: {product.brand}</p>
+          <p>Stock: {product.stock}</p>
+          <p>{product.description}</p>
+        </Box>
       </>
     )
 }
