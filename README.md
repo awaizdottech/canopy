@@ -20,7 +20,7 @@ Features Overview
    - User registration & login (JWT-based)<br>
      - User should be able to login with mobile/email and password
    - Role-based access control (Customer/Admin)
-   - Store token in local storage/session storage
+   - Store token in local storage/session storage/cookie
    - Store logged in user profile in Zustand store
    - This component should be a popup as user should be able to login from any of the public page.
    - Logout functionality
