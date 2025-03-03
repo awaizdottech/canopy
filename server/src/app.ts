@@ -1,7 +1,10 @@
 import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
-import { ApiError } from "./utils/standards"
+import userRouter from "./features/user/v1/user.routes"
+import productRouter from "./features/product/v1/product.routes"
+import orderRouter from "./features/order/v1/order.routes"
+import { errorHandler } from "./middlewares/error.middlewares"
 
 export const app = express()
 app.use(express.json({ limit: "16kb" }))
@@ -15,11 +18,11 @@ app.use(
   })
 )
 
-app.get("/api/v1/user")
 app.get("/api/v1/healthcheck", (req, res) => {
   res.json({ message: "server is working!" })
 })
+app.get("/api/v1/user", userRouter)
+app.get("/api/v1/products", productRouter)
+app.get("/api/v1/orders", orderRouter)
 
-app.use((req, res, next) => {
-  res.status(404).json(new ApiError(500, "internal server error"))
-})
+app.use(errorHandler)

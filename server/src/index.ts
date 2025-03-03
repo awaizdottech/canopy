@@ -1,20 +1,18 @@
 import { app } from "./app"
 import "dotenv/config"
-import { connectDB } from "./db/postgre/db"
+import { connectDB } from "./db/db"
+import pgPromise from "pg-promise"
+import { check } from "./dev"
 
-// connectDB()
-//   .then(() =>
-//     app.listen(process.env.PORT, () =>
-//       console.log(`server running on ${process.env.PORT}`)
-//     )
-//   )
-//   .catch(err => console.log("postgre connection error", err))
+let db: pgPromise.IDatabase<any>
 
 const main = async () => {
   app.listen(process.env.PORT, () =>
     console.log(`server running on ${process.env.PORT}`)
   )
-  await connectDB()
+  db = connectDB()
 }
 
 main()
+export { db }
+check() // TODO: remove before production

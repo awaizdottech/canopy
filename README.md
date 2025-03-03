@@ -82,3 +82,112 @@ Evaluation Criteria
 - UI/UX design & responsiveness
 - Authentication & Authorization in Reactjs and Nodejs implementation
 - Deployment & documentation
+
+<br>
+
+user:
+
+- username - string
+- password - string
+- email - string
+- mobile - string - not needed for admin
+- role - string
+- tokens - array of strings
+  fields from here not needed for admin
+- cart - array of objects - productID, quantity
+- orders - past & current - array of orderIDs
+- addresses - array of objects - address, city, state, country, pincode
+- payment methods - array of objects - cardNumber, expiryDate, cvv, nameOnCard
+- profilePic - string
+
+product:
+
+- productID - string
+- productName - string
+- productPrice - number
+- productQuantity - number
+- productCategory - string
+- productDescription - string
+- rating - number
+- productImage - string
+- reviews - array of objects - reviewRating, reviewComment, reviewUser
+
+orders:
+
+- productID - string
+- orderID - string
+- orderDate - date
+- orderStatus - string
+- orderTotal - number
+- orderPaymentMethod - string
+- orderAddress - string
+- orderUserID - string
+
+To Do:
+loggers in nodejs
+
+sql tables
+user:
+id - string - primary key
+username - string
+password - string
+email - string
+mobile - string - not needed for admin
+role_id - string - foreign key
+refresh_token - string
+profile_pic - string
+
+role:
+id - string - primary key
+role - string
+
+cart_item:
+id - string - primary key
+product_id - string - foreign key
+quantity - number
+user_id - string - foreign key
+
+address:
+id - string - primary key
+address - string
+user_id - string - foreign key
+
+payment_method:
+id - string - primary key
+card_number - string
+expiry_date - date
+cvv - string
+name_on_card - string
+user_id - string - foreign key
+
+product:
+id - string - primary key
+name - string
+price - number
+quantity - number
+category - string
+description - string
+rating - number
+image - string
+
+review:
+id - string - primary key
+rating - number
+comment - string
+user_id - string - foreign key
+product_id - string - foreign key
+
+order:
+id - string - primary key
+product_id - string - foreign key
+quantity - number
+date - date
+status - string
+total - number
+payment_method_id - string - foreign key
+address_id - string - foreign key
+user_id - string - foreign key
+
+createdAt & updatedAt in all tables
+cascade on delete in all tables
+not storing full account numbers in payment_method table

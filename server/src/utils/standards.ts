@@ -1,4 +1,4 @@
-class ApiResponse {
+export class ApiResponse {
   statusCode: number
   data: JSON
   message: string
@@ -12,16 +12,16 @@ class ApiResponse {
   }
 }
 
-class ApiError extends Error {
+export class ApiError extends Error {
   statusCode: number
-  errors: Error[]
+  errors: any[]
   data: JSON | null
   success: boolean
 
   constructor(
     statusCode: number,
     message = "Something went wrong",
-    errors = [],
+    errors: any[] = [],
     stack = ""
   ) {
     super(message)
@@ -34,4 +34,3 @@ class ApiError extends Error {
     else Error.captureStackTrace(this, this.constructor)
   }
 }
-export { ApiError, ApiResponse }
