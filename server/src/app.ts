@@ -21,8 +21,8 @@ app.use(
 app.get("/api/v1/healthcheck", (req, res) => {
   res.json({ message: "server is working!" })
 })
-app.get("/api/v1/user", userRouter)
-app.get("/api/v1/products", productRouter)
-app.get("/api/v1/orders", orderRouter)
+app.use("/api/v1/user", userRouter)
+app.use("/api/v1/products", productRouter)
+app.use("/api/v1/orders", orderRouter)
 
 app.use(errorHandler)

@@ -15,4 +15,4 @@ const main = async () => {
 
 main()
 export { db }
-check() // TODO: remove before production
+check() // TODO: remove before moving into production

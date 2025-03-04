@@ -1,11 +1,11 @@
 import { Request, Response, Router } from "express"
-import { getProducts } from "./product.services"
 import { ApiError } from "../../../utils/standards"
+import { getProductsController } from "./product.controllers"
 
 const productRouter = Router()
 
-productRouter.route("/:id").get(getProducts)
-productRouter.route("/").get(getProducts).post(getProducts)
+productRouter.route("/:id").get(getProductsController)
+productRouter.route("/").get(getProductsController).post(getProductsController)
 
 productRouter.use((req: Request, res: Response) => {
   res

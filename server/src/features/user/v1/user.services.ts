@@ -6,7 +6,7 @@ import bcrypt from "bcrypt"
 
 export const regitserUser = async (registerInputs: registerInputsType) => {
   try {
-    getUserIfExists()
+    getUserIfExists("email", registerInputs.email)
   } catch (error) {
     throw error
   }
@@ -14,7 +14,8 @@ export const regitserUser = async (registerInputs: registerInputsType) => {
 
 export const loginUser = async (loginInputs: loginInputsType) => {
   try {
-    getUserIfExists()
+    if (loginInputs.email) getUserIfExists("email", loginInputs.email)
+    else if (loginInputs.mobile) getUserIfExists("mobile", loginInputs.mobile)
   } catch (error) {
     throw error
   }
