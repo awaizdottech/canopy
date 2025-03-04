@@ -1,18 +1,30 @@
 import { create } from "zustand"
 import { devtools } from "zustand/middleware"
-import { productType } from "../components/common/ProductGriditem"
+
+export type productType = {
+  id: number
+  images: string[]
+  rating: number
+  title: string
+  availabilityStatus: string
+  price: number
+  description: string
+  category: string
+  brand: string
+  stock: number
+}
 
 type userStoreType = {
-  products: productType[]
-  addProducts(products: productType[]): void
+  products: Map<number, productType>
 }
 
 const useProductStore = create<userStoreType>()(
-  devtools(set => ({
-    products: [],
-    addProducts: (products: productType[]) =>
-      set(() => ({ products: [...products] }), false, "addProducts"),
-  }))
+  devtools(
+    () => ({
+      products: new Map<number, productType>(),
+    }),
+    { name: "products" }
+  )
 )
 
 export default useProductStore

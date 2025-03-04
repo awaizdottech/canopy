@@ -23,10 +23,10 @@ const Header = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null)
-  const cartCount = useUserStore(state => state.user.cart.length)
-  const authStatus = useUserStore(state => state.authStatus)
   const menuId: string = "primary-search-account-menu"
   const mobileMenuId: string = "primary-search-account-menu-mobile"
+  const authStatus = useUserStore(state => state.authStatus)
+  const cartCount = useUserStore(state => state.user.cart).length
 
   const handleProfileMenuOpen = useCallback(
     (event: React.MouseEvent<HTMLElement>) => setAnchorEl(event.currentTarget),
