@@ -9,15 +9,14 @@ export const getUserIfExists = async (
   value: string
 ) => {
   try {
-    console.log("reached user repo getUserIfExists")
-    if ((identifier = "id"))
+    if (identifier == "id")
       return await db.oneOrNone("select * from users where id=$1", [value])
     else if (identifier == "email")
       return await db.oneOrNone("select * from users where email=$1", [value])
     else
       return await db.oneOrNone("select * from users where mobile=$1", [value])
   } catch (error) {
-    throw new ApiError(404, "failed to getUserIfExists")
+    throw new ApiError(500, "failed to getUserIfExists")
   }
 }
 
@@ -31,11 +30,11 @@ export const createUser = async (newUser: {
     console.log("reached user repo createuser")
 
     return await db.one(
-      "insert into users(username, email, password, mobile, role_id) values ($1, $2, $3,$4, $5) returning id,username, email, mobile, role_id;",
+      "insert into users(username, email, password, mobile, role_id) values ($1, $2, $3,$4, $5) returning id,username, email, mobile;",
       [newUser.username, newUser.email, newUser.password, newUser.mobile, 1]
     )
   } catch (error) {
-    throw new ApiError(404, "failed to createUser.")
+    throw new ApiError(500, "failed to createUser.")
   }
 }
 
@@ -43,7 +42,7 @@ export const updateUser = async (updateQuery: string, values: string[]) => {
   try {
     return await db.one(updateQuery, values)
   } catch (error) {
-    throw new ApiError(404, "failed to updateUser")
+    throw new ApiError(500, "failed to updateUser")
   }
 }
 
@@ -51,7 +50,7 @@ export const getCart = async (userId: string) => {
   try {
     return await db.any("select * from cart_items where user_id=$1", [userId])
   } catch (error) {
-    throw new ApiError(400, "failed to getcart")
+    throw new ApiError(500, "failed to getcart")
   }
 }
 
@@ -60,19 +59,30 @@ export const addToCart = async (
   values: (string | number)[]
 ) => {
   try {
+    console.log(insertQuery, values)
+
     return await db.any(insertQuery, values)
   } catch (error) {
-    throw new ApiError(404, "failed to addToCart")
+    throw new ApiError(500, "failed to addToCart")
   }
 }
 
-export const removeFromCart = async (cartItemId: string) => {
+export const removeFromCart = async (cartItemId: number) => {
+  // TODO: temp in param
   try {
     return await db.one("delete from cart_items where id=$1 returning *", [
       cartItemId,
     ])
   } catch (error) {
-    throw new ApiError(404, "failed to removeFromCart")
+    throw new ApiError(500, "failed to removeFromCart")
+  }
+}
+
+export const getRole = async (roleId: string) => {
+  try {
+    return await db.one("select role from roles where id=$1", [roleId])
+  } catch (error) {
+    throw new ApiError(500, "failed to getAddresses")
   }
 }
 
@@ -80,7 +90,7 @@ export const getOrders = async (userId: string) => {
   try {
     return await db.any("select * from orders where user_id=$1", [userId])
   } catch (error) {
-    throw new ApiError(400, "failed to getOrders")
+    throw new ApiError(500, "failed to getOrders")
   }
 }
 
@@ -91,7 +101,7 @@ export const addToOrders = async (
   try {
     return await db.any(insertQuery, values)
   } catch (error) {
-    throw new ApiError(404, "failed to addToOrders")
+    throw new ApiError(500, "failed to addToOrders")
   }
 }
 
@@ -99,7 +109,7 @@ export const getAddresses = async (userId: string) => {
   try {
     return await db.any("select * from addresses where user_id=$1", [userId])
   } catch (error) {
-    throw new ApiError(400, "failed to getAddresses")
+    throw new ApiError(500, "failed to getAddresses")
   }
 }
 
@@ -109,11 +119,11 @@ export const addToAddresses = async (details: {
 }) => {
   try {
     return await db.any(
-      "insert into addresses(user_id,address) values ($1,$2)",
+      "insert into addresses(user_id,address) values ($1,$2) returning *",
       [details.userId, details.address]
     )
   } catch (error) {
-    throw new ApiError(400, "failed to addToAddresses")
+    throw new ApiError(500, "failed to addToAddresses")
   }
 }
 
@@ -123,7 +133,7 @@ export const removeFromAddresses = async (addressId: string) => {
       addressId,
     ])
   } catch (error) {
-    throw new ApiError(404, "failed to removeFromAddresses")
+    throw new ApiError(500, "failed to removeFromAddresses")
   }
 }
 
@@ -133,7 +143,7 @@ export const getPaymentMethods = async (userId: string) => {
       userId,
     ])
   } catch (error) {
-    throw new ApiError(400, "failed to getPaymentMethods")
+    throw new ApiError(500, "failed to getPaymentMethods")
   }
 }
 
@@ -144,7 +154,7 @@ export const addToPaymentMethods = async (
 ) => {
   try {
     return await db.any(
-      "insert into payment_methods(user_id,card_number,expiry_date,cvv,name_on_card) values ($1,$2,$3,$4,$5)",
+      "insert into payment_methods(user_id,card_number,expiry_date,cvv,name_on_card) values ($1,$2,$3,$4,$5) returning *",
       [
         details.userId,
         details.cardNumber,
@@ -154,7 +164,7 @@ export const addToPaymentMethods = async (
       ]
     )
   } catch (error) {
-    throw new ApiError(400, "failed to addToPaymentMethods")
+    throw new ApiError(500, "failed to addToPaymentMethods")
   }
 }
 
@@ -164,6 +174,6 @@ export const removeFromPaymentMethods = async (paymentMethodId: string) => {
       paymentMethodId,
     ])
   } catch (error) {
-    throw new ApiError(404, "failed to removeFromPaymentMethods")
+    throw new ApiError(500, "failed to removeFromPaymentMethods")
   }
 }

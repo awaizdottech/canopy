@@ -5,9 +5,9 @@ type userType = {
   username: string
   email: string
   mobile: string
-  tokens: {}
-  cart: number[]
-  orders: number[]
+  refreshToken: string
+  cart: { id: string; quantity: number }[]
+  orders: { id: string; quantity: number }[]
   role: "admin" | "customer"
 }
 
@@ -15,10 +15,10 @@ type userStoreType = {
   user: userType
   authStatus: boolean
   logoutUser(): void
-  addToCart(productId: number): void
-  removeFromCart(productId: number): void
-  addToOrders(products: number[]): void
-  removeFromOrders(productsId: number): void
+  addToCart(productId: string, quantity: number): void
+  removeFromCart(productId: string): void
+  addToOrders(products: { id: string; quantity: number }[]): void
+  removeFromOrders(productsId: string): void
   emptyPlacedOrders(): void
 }
 
@@ -31,7 +31,7 @@ const useUserStore = create<userStoreType>()(
           email: "dummy",
           mobile: "dummy",
           cart: [],
-          tokens: {},
+          refreshToken: "",
           orders: [],
           role: "customer",
         },
@@ -45,7 +45,7 @@ const useUserStore = create<userStoreType>()(
                 email: "dummy",
                 mobile: "dummy",
                 cart: [],
-                tokens: {},
+                refreshToken: "",
                 orders: [],
                 role: "customer",
               },
@@ -53,26 +53,31 @@ const useUserStore = create<userStoreType>()(
             false,
             "logoutUser"
           ),
-        addToCart: (productId: number) =>
-          set(
-            state => ({
-              user: { ...state.user, cart: [...state.user.cart!, productId] },
-            }),
-            false,
-            "addToCart"
-          ),
-        removeFromCart: (productId: number) =>
+        addToCart: (productId: string, quantity: number) =>
           set(
             state => ({
               user: {
                 ...state.user,
-                cart: state.user.cart.filter(id => id !== productId),
+                cart: [...state.user.cart!, { id: productId, quantity }],
+              },
+            }),
+            false,
+            "addToCart"
+          ),
+        removeFromCart: (productId: string) =>
+          set(
+            state => ({
+              user: {
+                ...state.user,
+                cart: state.user.cart.filter(
+                  product => product.id !== productId
+                ),
               },
             }),
             false,
             "removeFromCart"
           ),
-        addToOrders: (products: number[]) =>
+        addToOrders: (products: { id: string; quantity: number }[]) =>
           set(
             state => ({
               user: {
@@ -83,12 +88,14 @@ const useUserStore = create<userStoreType>()(
             false,
             "addToOrders"
           ),
-        removeFromOrders: (productId: number) =>
+        removeFromOrders: (productId: string) =>
           set(
             state => ({
               user: {
                 ...state.user,
-                orders: state.user.orders.filter(id => id !== productId),
+                orders: state.user.orders.filter(
+                  order => order.id !== productId
+                ),
               },
             }),
             false,

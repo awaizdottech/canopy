@@ -19,8 +19,8 @@ const Home = () => {
     }
   }, [])
 
-  if ((products?.size ?? 0) < 30) return <>Loading...</>
-  else if (error) return <>Something went wrong</>
+  if (error) return <>Something went wrong</>
+  else if ((products?.size ?? 0) < 30) return <>Loading...</>
   else
     return (
       <>

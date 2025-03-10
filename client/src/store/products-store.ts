@@ -2,8 +2,8 @@ import { create } from "zustand"
 import { devtools } from "zustand/middleware"
 
 export type productType = {
-  id: number
-  images: string[]
+  id: string
+  image: string
   rating: number
   title: string
   availabilityStatus: string
@@ -15,13 +15,13 @@ export type productType = {
 }
 
 type userStoreType = {
-  products: Map<number, productType>
+  products: Map<string, productType>
 }
 
 const useProductStore = create<userStoreType>()(
   devtools(
     () => ({
-      products: new Map<number, productType>(),
+      products: new Map<string, productType>(),
     }),
     { name: "products" }
   )

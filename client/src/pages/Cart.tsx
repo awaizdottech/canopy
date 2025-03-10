@@ -13,17 +13,17 @@ const Cart = () => {
   const addToOrders = useUserStore(state => state.addToOrders)
   const removeFromCart = useUserStore(state => state.removeFromCart)
   const navigate = useNavigate()
-  const cartItemIDs = useUserStore(state => state.user.cart)
-  const cartItems = getCartItems(cartItemIDs)
+  const cart = useUserStore(state => state.user.cart)
+  const cartItems = getCartItems(cart)
   const cartTotal = getCartItemsTotal(
     cartItems?.filter((item): item is productType => item !== undefined) ?? []
   )
-  console.log("cartItems", cartItems)
+  console.log("cart", cart)
 
   const checkout = useCallback(() => {
     navigate("/checkout")
-    addToOrders(cartItemIDs)
-  }, [cartItemIDs])
+    addToOrders(cart)
+  }, [cart])
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -44,7 +44,7 @@ const Cart = () => {
           ) : null
         )}
       </Grid>
-      <Box>Total: ${Math.ceil(cartTotal)}</Box>
+      <Box>Total: ${cartTotal}</Box>
       <Button onClick={checkout}>Checkout</Button>
     </Box>
   )

@@ -6,27 +6,28 @@ import { useEffect, useState } from "react"
 import { getProducts } from "../services/products.services"
 import useUserStore from "../store/user-store"
 import { Box } from "@mui/material"
+import { isProductInCart } from "../services/user.services"
 
 const ProductDetails = () => {
   console.log("product details rendered")
   const { id } = useParams()
   const [error, setError] = useState(false)
-  const product = useProductStore(state => state.products).get(
-    Number(id) ?? null
-  )
-  const cartItemIDs = useUserStore(state => state.user.cart)
+  if (!id) setError(true)
+  const product = useProductStore(state => state.products).get(Number(id!))
   const addToCart = useUserStore(state => state.addToCart)
+  const cart = useUserStore(state => state.user.cart)
+  const check = isProductInCart(product!.id, cart)
 
   useEffect(() => {
     try {
-      if (!product) getProducts(Number(id))
+      if (!product) getProducts(id)
     } catch (error: any) {
       setError(error)
     }
   }, [])
 
-  if (!product) return <>Loading...</>
-  else if (error) return <>Something went wrong</>
+  if (error) return <>Something went wrong</>
+  else if (!product) return <>Loading...</>
   else
     return (
       <Box sx={{ flexGrow: 1 }}>
@@ -34,9 +35,9 @@ const ProductDetails = () => {
         <Button
           variant="contained"
           size="medium"
-          onClick={() => addToCart(product.id)}
-          disabled={cartItemIDs.includes(product.id)}>
-          {cartItemIDs.includes(product.id) ? "Already in Cart" : "Add to Cart"}
+          onClick={() => addToCart(product.id, 1)}
+          disabled={check}>
+          {check ? "Already in Cart" : "Add to Cart"}
         </Button>
         <Box>
           <p>Category: {product.category}</p>

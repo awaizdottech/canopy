@@ -5,6 +5,7 @@ import userRouter from "./features/user/v1/user.routes"
 import productRouter from "./features/product/v1/product.routes"
 import orderRouter from "./features/order/v1/order.routes"
 import { errorHandler } from "./middlewares/error.middlewares"
+import morgan from "morgan"
 
 export const app = express()
 app.use(express.json({ limit: "16kb" }))
@@ -17,8 +18,9 @@ app.use(
     credentials: true,
   })
 )
+app.use(morgan("dev"))
 
-app.get("/api/v1/healthcheck", (req, res) => {
+app.get("/api/v1/healthcheck", (_, res) => {
   res.json({ message: "server is working!" })
 })
 app.use("/api/v1/users", userRouter)

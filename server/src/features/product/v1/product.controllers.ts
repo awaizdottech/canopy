@@ -2,7 +2,6 @@ import { Request, Response } from "express"
 import { asyncHandler } from "../../../middlewares/error.middlewares"
 import { getProducts } from "./product.services"
 import { ApiError, ApiResponse } from "../../../helpers/api-standards"
-import { z } from "zod"
 import { productIDsList } from "./product.schemas"
 
 export const getProductsController = asyncHandler(
@@ -10,7 +9,7 @@ export const getProductsController = asyncHandler(
     let finalResponse
     if (req.method == "GET") {
       const { id } = req.params
-      if (id) finalResponse = await getProducts([Number(id)])
+      if (id) finalResponse = await getProducts([id])
       else finalResponse = await getProducts()
     } else {
       const validation = productIDsList.safeParse(req.body)
@@ -21,12 +20,9 @@ export const getProductsController = asyncHandler(
           validation.error.issues
         )
 
-      try {
-        finalResponse = await getProducts(validation.data)
-      } catch (error) {
-        throw error
-      }
+      finalResponse = await getProducts(validation.data)
     }
+
     return res
       .status(200)
       .json(

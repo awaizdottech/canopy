@@ -1,8 +1,17 @@
-import { getAllOrders } from "./order.repo"
+import { getAllOrders, updateOrderStatus } from "./order.repo"
+import { updateOrderType } from "./order.schemas"
 
-export const getOrders = async () => {
+export const getAllOrdersService = async () => {
   try {
-    getAllOrders()
+    return await getAllOrders()
+  } catch (error) {
+    throw error
+  }
+}
+
+export const updateOrderService = async (order: updateOrderType) => {
+  try {
+    return await updateOrderStatus(order)
   } catch (error) {
     throw error
   }

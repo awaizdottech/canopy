@@ -12,6 +12,7 @@ import {
   getCart,
   getOrders,
   getPaymentMethods,
+  getRole,
   getUserIfExists,
   removeFromAddresses,
   removeFromCart,
@@ -34,8 +35,10 @@ export const regitserUserService = async (
   registerInputs: registerInputsType
 ) => {
   try {
+    console.log(await getUserIfExists("email", registerInputs.email), "hello")
+
     if (await getUserIfExists("email", registerInputs.email))
-      throw new ApiError(404, "user already exists")
+      throw new ApiError(400, "user already exists")
 
     const { cart, ...user } = registerInputs
 
@@ -43,17 +46,14 @@ export const regitserUserService = async (
       ...user,
       password: await hashPassword(user.password),
     })
-    const { id, email, username } = savedUser.data
+    const { id, email, username } = savedUser
 
     const refreshToken = generateRefreshToken(id)
-
-    if (savedUser) {
-      const { updateQuery, values } = updateUserQueryGenerator({
-        id,
-        refreshToken,
-      })
-      savedUser = await updateUser(updateQuery, values)
-    }
+    const { updateQuery, values } = updateUserQueryGenerator({
+      id,
+      refresh_token: refreshToken,
+    })
+    const updatedFields = await updateUser(updateQuery, values)
 
     let savedCart
     if (registerInputs.cart?.length) {
@@ -65,8 +65,12 @@ export const regitserUserService = async (
     }
 
     return {
-      user: { ...savedUser.data, cart: savedCart },
-      refreshToken,
+      user: {
+        ...savedUser,
+        ...updatedFields,
+        cart: savedCart ?? [],
+        role: (await getRole("1")).role,
+      },
       accessToken: generateAccessToken({ id, email, username }),
     }
   } catch (error) {
@@ -81,24 +85,25 @@ export const loginUserService = async (loginInputs: loginInputsType) => {
       user = await getUserIfExists("email", loginInputs.email)
     else if (loginInputs.mobile)
       user = await getUserIfExists("mobile", loginInputs.mobile)
+    console.log("user from loginUserService", user)
 
-    if (!user) throw new ApiError(404, "user doesnt exist")
+    if (!user) throw new ApiError(400, "user doesnt exist")
 
-    const { id, email, username, password } = user.data
+    const { id, email, username, password } = user
     if (
       !(await isPasswordCorrect({
         inputPassword: loginInputs.password,
         dbPassword: password,
       }))
     )
-      throw new ApiError(404, "password didnt match")
+      throw new ApiError(400, "password didnt match")
 
     const refreshToken = generateRefreshToken(id)
     const { updateQuery, values } = updateUserQueryGenerator({
       id,
-      refreshToken,
+      refresh_token: refreshToken,
     })
-    user = await updateUser(updateQuery, values)
+    const updatedRefreshToken = await updateUser(updateQuery, values)
 
     if (loginInputs.cart?.length) {
       const { insertQuery, values } = addToCartQueryGenerator(
@@ -110,13 +115,14 @@ export const loginUserService = async (loginInputs: loginInputsType) => {
 
     return {
       user: {
-        ...user.data,
+        ...user,
         cart: await getCart(id),
         orders: await getOrders(id),
         addresses: await getAddresses(id),
         paymentMethods: await getPaymentMethods(id),
+        role: (await getRole(user.role_id)).role,
+        ...updatedRefreshToken,
       },
-      refreshToken,
       accessToken: generateAccessToken({ id, email, username }),
     }
   } catch (error) {
@@ -143,7 +149,7 @@ export const refreshTokensService = async (incomingRefreshToken: string) => {
 
   try {
     const user = await getUserIfExists("id", decodedToken.id)
-    if (!user) throw new ApiError(401, "user doesnt exist")
+    if (!user) throw new ApiError(400, "user doesnt exist")
 
     if (incomingRefreshToken !== user.data.refreshToken)
       throw new ApiError(401, "invalid refresh token")
@@ -230,7 +236,7 @@ const generateAccessToken = (user: {
   email: string
 }) => {
   if (!process.env.ACCESS_TOKEN_SECRET) {
-    throw new ApiError(404, "access secret is not defined")
+    throw new ApiError(500, "access secret is not defined")
   }
 
   return jwt.sign(
@@ -249,7 +255,7 @@ const generateAccessToken = (user: {
 
 const generateRefreshToken = (id: string) => {
   if (!process.env.REFRESH_TOKEN_SECRET) {
-    throw new ApiError(404, "refresh secret is not defined")
+    throw new ApiError(500, "refresh secret is not defined")
   }
 
   return jwt.sign(
@@ -293,7 +299,7 @@ const updateUserQueryGenerator = (modifiedUser: {
       updates.push(`${key}=$${paramIndex}`)
       values.push(modifiedUser[key])
       if (key !== "password") returning.push(key)
-      paramIndex++
+      paramIndex += 1
     }
   }
 
@@ -313,9 +319,9 @@ const addToCartQueryGenerator = (userId: string, cart: cartType) => {
   let paramIndex = 2
 
   for (const cartItem of cart) {
-    insertions.push(`($${paramIndex},$${paramIndex++},$1)`)
+    insertions.push(`($${paramIndex},$${paramIndex + 1},$1)`)
     values.push(cartItem.id, cartItem.quantity)
-    paramIndex++
+    paramIndex += 2
   }
 
   return {
@@ -333,7 +339,9 @@ const addToOdersQueryGenerator = (userId: string, orders: ordersType) => {
 
   for (const order of orders) {
     insertions.push(
-      `($${paramIndex},$${paramIndex++},$${paramIndex++},$${paramIndex++},$${paramIndex++},$${paramIndex++},$${paramIndex++},$1)`
+      `($${paramIndex},$${paramIndex + 1},$${paramIndex + 2},$${
+        paramIndex + 3
+      },$${paramIndex + 4},$${paramIndex + 5},$${paramIndex + 6},$1)`
     )
     values.push(
       order.id,
@@ -344,7 +352,7 @@ const addToOdersQueryGenerator = (userId: string, orders: ordersType) => {
       order.paymentMethodId,
       order.addressId
     )
-    paramIndex++
+    paramIndex += 7
   }
 
   return {

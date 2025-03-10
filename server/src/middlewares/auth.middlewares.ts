@@ -16,11 +16,11 @@ export const checkUserAccess = asyncHandler(async (req, _, next) => {
     req.header("Authorization")?.replace("Bearer ", "")
   if (!accessToken) throw new ApiError(401, "access token missing")
 
+  if (!process.env.ACCESS_TOKEN_SECRET)
+    throw new ApiError(500, "access token secret is undefined")
+
   let decodedToken
   try {
-    if (!process.env.ACCESS_TOKEN_SECRET)
-      throw new ApiError(500, "access token secret is undefined")
-
     decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
   } catch (error) {
     throw new ApiError(401, "invalid refresh token. it probably expired")
@@ -29,14 +29,16 @@ export const checkUserAccess = asyncHandler(async (req, _, next) => {
   if (typeof decodedToken === "string" || !decodedToken)
     throw new ApiError(401, "unauthorised")
 
-  try {
-    const user = await getUserIfExists("id", decodedToken.id)
-    if (!user) throw new ApiError(401, "user doesnt exist")
+  const user = await getUserIfExists("id", decodedToken.id)
+  if (!user) throw new ApiError(401, "user doesnt exist")
+  console.log("uesr from checkUserAccess", user)
 
-    req.user = user.data
+  req.user = user.data
 
-    next()
-  } catch (error) {
-    throw new ApiError(401, "something went wrong while checking user in db")
-  }
+  next()
+})
+
+export const checkAdminAccess = asyncHandler((req, _, next) => {
+  if (req.user.role !== "admin") throw new ApiError(401, "unauthorised")
+  next()
 })

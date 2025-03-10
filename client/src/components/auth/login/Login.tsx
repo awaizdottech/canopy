@@ -5,7 +5,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginUser } from "../../../services/user.services"
 import { Button, TextField } from "@mui/material"
 import LoginPasswordInput from "./LoginPasswordInput"
-import SelectLoginType from "./SelectLoginType"
 
 export type loginInputsType = z.infer<typeof loginSchema>
 
@@ -22,24 +21,14 @@ const Login = () => {
 
   return (
     <form onSubmit={handleSubmit(loginUser)}>
-      <SelectLoginType register={register} error={Boolean(errors.loginType)} />
       <TextField
-        id="email"
-        type="email"
-        label="Email"
+        id="emailOrMobile"
+        type="emailOrMobile"
+        label="Email or Mobile no."
         variant="standard"
-        {...register("email")}
-        helperText={errors.email?.message}
-        error={Boolean(errors.email)}
-      />
-      <TextField
-        id="mobile"
-        type="tel"
-        label="Mobile"
-        variant="standard"
-        {...register("mobile")}
-        helperText={errors.mobile?.message}
-        error={Boolean(errors.mobile)}
+        {...register("emailOrMobile")}
+        helperText={errors.emailOrMobile?.message}
+        error={Boolean(errors.emailOrMobile)}
       />
       <LoginPasswordInput
         register={register}

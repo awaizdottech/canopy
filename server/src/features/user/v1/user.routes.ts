@@ -17,14 +17,18 @@ const userRouter = Router()
 userRouter.route("/register").post(registerUserController)
 userRouter.route("/login").post(loginUserController)
 userRouter.route("/refresh").get(refreshTokensController)
-userRouter.use(checkUserAccess)
-userRouter.route("/update-profile").patch(updateUserController)
-userRouter.route("/update-cart").patch(updateCartController)
-userRouter.route("/update-orders").patch(updateOrdersController)
-userRouter.route("/update-addresses").patch(updateAddressesController)
+// userRouter.use(checkUserAccess) is bad for wrong routes as it'll throw unauthorised for them
+userRouter.route("/update-profile").patch(checkUserAccess, updateUserController)
+userRouter.route("/update-cart").patch(checkUserAccess, updateCartController)
+userRouter
+  .route("/update-orders")
+  .patch(checkUserAccess, updateOrdersController)
+userRouter
+  .route("/update-addresses")
+  .patch(checkUserAccess, updateAddressesController)
 userRouter
   .route("/update-payment-methods")
-  .patch(updatePaymentMethodsController)
+  .patch(checkUserAccess, updatePaymentMethodsController)
 
 userRouter.use((req: Request, res: Response) => {
   res

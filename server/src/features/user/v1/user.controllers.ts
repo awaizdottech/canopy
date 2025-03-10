@@ -57,31 +57,24 @@ export const registerUserController = asyncHandler(
           )
         )
 
-    try {
-      const { user, accessToken, refreshToken } = await regitserUserService(
-        validation.data
-      )
-
-      return res
-        .status(200)
-        .cookie("accessToken", accessToken, {
-          ...options,
-          maxAge: eval(process.env.ACCESS_TOKEN_COOKIE_EXPIRY ?? "1d"),
-        })
-        .cookie("refreshToken", refreshToken, {
-          ...options,
-          maxAge: eval(process.env.REFRESH_TOKEN_COOKIE_EXPIRY ?? "1w"),
-        })
-        .json(
-          new ApiResponse(
-            200,
-            JSON.parse(JSON.stringify({ user, accessToken, refreshToken })),
-            "user registered successfully"
-          )
+    const { user, accessToken } = await regitserUserService(validation.data)
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, {
+        ...options,
+        maxAge: Number(process.env.ACCESS_TOKEN_EXPIRY ?? 0),
+      })
+      .cookie("refreshToken", user.refreshToken, {
+        ...options,
+        maxAge: Number(process.env.REFRESH_TOKEN_EXPIRY ?? 0),
+      })
+      .json(
+        new ApiResponse(
+          200,
+          JSON.parse(JSON.stringify({ user, accessToken })),
+          "user registered successfully"
         )
-    } catch (error) {
-      throw error
-    }
+      )
   }
 )
 
@@ -99,31 +92,25 @@ export const loginUserController = asyncHandler(
           )
         )
 
-    try {
-      const { user, accessToken, refreshToken } = await loginUserService(
-        validation.data
-      )
+    const { user, accessToken } = await loginUserService(validation.data)
 
-      return res
-        .status(200)
-        .cookie("accessToken", accessToken, {
-          ...options,
-          maxAge: eval(process.env.ACCESS_TOKEN_COOKIE_EXPIRY ?? "1d"),
-        })
-        .cookie("refreshToken", refreshToken, {
-          ...options,
-          maxAge: eval(process.env.REFRESH_TOKEN_COOKIE_EXPIRY ?? "1w"),
-        })
-        .json(
-          new ApiResponse(
-            200,
-            JSON.parse(JSON.stringify({ user, accessToken, refreshToken })),
-            "user logged in successfully"
-          )
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, {
+        ...options,
+        maxAge: Number(process.env.ACCESS_TOKEN_EXPIRY ?? 0),
+      })
+      .cookie("refreshToken", user.refreshToken, {
+        ...options,
+        maxAge: Number(process.env.REFRESH_TOKEN_EXPIRY ?? 0),
+      })
+      .json(
+        new ApiResponse(
+          200,
+          JSON.parse(JSON.stringify({ user, accessToken })),
+          "user logged in successfully"
         )
-    } catch (error) {
-      throw error
-    }
+      )
   }
 )
 
@@ -132,7 +119,7 @@ export const refreshTokensController = asyncHandler(
     const incomingRefreshToken =
       req.signedCookies.refreshToken || req.body.refreshToken
     if (!incomingRefreshToken)
-      return res.status(400).json(new ApiError(401, "refresh token missing"))
+      return res.status(400).json(new ApiError(400, "refresh token missing"))
 
     const { user, accessToken } = await refreshTokensService(
       incomingRefreshToken
@@ -142,7 +129,7 @@ export const refreshTokensController = asyncHandler(
       .status(200)
       .cookie("accessToken", accessToken, {
         ...options,
-        maxAge: eval(process.env.ACCESS_TOKEN_COOKIE_EXPIRY ?? "1d"),
+        maxAge: Number(process.env.ACCESS_TOKEN_EXPIRY ?? 0),
       })
       .json(
         new ApiResponse(
@@ -161,7 +148,11 @@ export const updateUserController = asyncHandler(
       return res
         .status(400)
         .json(
-          new ApiError(400, "input validation failed", validation.error.issues)
+          new ApiError(
+            400,
+            "user update input validation failed",
+            validation.error.issues
+          )
         )
 
     return res.status(200).json(
@@ -196,6 +187,8 @@ export const updateCartController = asyncHandler(
             "cart updated successfully"
           )
         )
+
+    throw new ApiError(404, "missing action!")
   }
 )
 
@@ -223,6 +216,8 @@ export const updateOrdersController = asyncHandler(
             "orders updated successfully"
           )
         )
+
+    throw new ApiError(404, "missing action!")
   }
 )
 
@@ -248,6 +243,8 @@ export const updateAddressesController = asyncHandler(
             `address ${req.action == "add" ? "added" : "removed"} successfully`
           )
         )
+
+    throw new ApiError(404, "missing action!")
   }
 )
 
@@ -275,5 +272,7 @@ export const updatePaymentMethodsController = asyncHandler(
             } successfully`
           )
         )
+
+    throw new ApiError(404, "missing action!")
   }
 )

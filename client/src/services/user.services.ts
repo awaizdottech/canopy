@@ -7,19 +7,16 @@ import { superAxios } from "../utils"
 export const registerAndLoginUser = async (data: registerInputsType) => {
   const { confirmPassword, ...rest } = data
   try {
-    const response = await superAxios("post", "/users/add", rest)
-    console.log(response.data)
-    useUserStore.setState(state => ({
+    const response = await superAxios("post", "/users/register", {
+      ...rest,
+      cart: [...useUserStore.getState().user.cart],
+    })
+    const dbUser = response.data.data.user
+
+    useUserStore.setState({
       authStatus: true,
-      user: {
-        ...rest,
-        role:
-          localStorage.getItem("admin") == data.email ? "admin" : "customer",
-        tokens: {},
-        cart: [...state.user.cart],
-        orders: [],
-      },
-    }))
+      user: { ...dbUser, refreshToken: dbUser.refresh_token },
+    })
   } catch (error) {
     console.error(error)
   }
@@ -27,28 +24,46 @@ export const registerAndLoginUser = async (data: registerInputsType) => {
 
 export const loginUser = async (data: loginInputsType) => {
   try {
-    const response = await superAxios("post", "/user/login", data)
-    console.log(response.data)
-    useUserStore.setState(state => ({
+    const { emailOrMobile, ...passwordObj } = data
+
+    const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    const mobileRegex = /^(\+?91|0)?[6-9]\d{9}$/
+
+    type loginDataType = {
+      password: string
+      loginType?: "email" | "mobile"
+      email?: string
+      mobile?: string
+    }
+    const loginData = passwordObj as loginDataType
+
+    if (emailRegex.test(emailOrMobile)) {
+      loginData.loginType = "email"
+      loginData.email = emailOrMobile
+    }
+    if (mobileRegex.test(emailOrMobile)) {
+      loginData.loginType = "mobile"
+      loginData.mobile = emailOrMobile
+    }
+
+    const response = await superAxios("post", "/users/login", loginData)
+    const dbUser = response.data.data.user
+    console.log(dbUser)
+    useUserStore.setState({
       authStatus: true,
-      user: {
-        email: data.email ? data.email : "nice@dummy.com",
-        mobile: data.mobile ? data.mobile : "9876543210",
-        username: "awaiz",
-        role:
-          localStorage.getItem("admin") == data.email ? "admin" : "customer",
-        tokens: {},
-        cart: state.user.cart,
-        orders: [],
-      },
-    }))
+      user: { ...dbUser, refreshToken: dbUser.refresh_token },
+    })
   } catch (error) {
     console.error(error)
   }
 }
 
-export const getCartItems = (cartItemsIDs: number[]) => {
-  return cartItemsIDs.map(id => useProductStore.getState().products.get(id))
+export const getCartItems = (
+  cartItems: { product_id: string; quantity: number }[]
+) => {
+  return cartItems.map(item =>
+    useProductStore.getState().products.get(item.product_id)
+  )
 }
 
 export const getCartItemsTotal = (cartItems: productType[]) => {
@@ -59,7 +74,7 @@ export const getCartItemsTotal = (cartItems: productType[]) => {
   }, 0)
 }
 
-export const getOrderItems = (orderItemsIDs: number[]) => {
+export const getOrderItems = (orderItemsIDs: string[]) => {
   return orderItemsIDs.map(id => useProductStore.getState().products.get(id))
 }
 
@@ -100,8 +115,17 @@ export const getOrderedItems = () => {
   const allOrdersIDs = Object.keys(allOrders)
   return {
     orderedItems: allOrdersIDs.map((orderId: string) =>
-      useProductStore.getState().products.get(Number(orderId))
+      useProductStore.getState().products.get(orderId)
     ),
     allOrders,
   }
+}
+
+export const isProductInCart = (
+  id: string,
+  cart: { id: string; quantity: number }[]
+): boolean => {
+  let check = false
+  cart.forEach(item => (item.id == id ? (check = true) : (check = false)))
+  return check
 }

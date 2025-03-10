@@ -30,4 +30,4 @@ export const productSchema = z.object({
   ),
 })
 
-export const productIDsList = z.array(z.number()).nonempty()
+export const productIDsList = z.array(z.string()).nonempty()

@@ -1,5 +1,4 @@
 // user:
-
 // - username - string
 // - password - string
 // - email - string
@@ -42,7 +41,8 @@ export const registerSchema = z.object({
   email: z.string().trim().email().max(40),
   mobile: mobileSchema,
   password: passwordSchema,
-  cart: z.array(z.object({ id: z.string(), quantity: z.number() })).optional(),
+  // cart: z.array(z.object({ id: z.string(), quantity: z.number() })).optional(),
+  cart: z.array(z.object({ id: z.number(), quantity: z.number() })).optional(), // TODO:
 })
 
 export const loginSchema = z.discriminatedUnion("loginType", [
@@ -52,7 +52,8 @@ export const loginSchema = z.discriminatedUnion("loginType", [
     password: passwordSchema,
     mobile: mobileSchema.optional(),
     cart: z
-      .array(z.object({ id: z.string(), quantity: z.number() }))
+      // .array(z.object({ id: z.string(), quantity: z.number() }))
+      .array(z.object({ id: z.number(), quantity: z.number() })) // TODO: temp
       .optional(),
   }),
 
@@ -62,7 +63,8 @@ export const loginSchema = z.discriminatedUnion("loginType", [
     password: passwordSchema,
     email: z.string().trim().email().optional(),
     cart: z
-      .array(z.object({ id: z.string(), quantity: z.number() }))
+      // .array(z.object({ id: z.string(), quantity: z.number() }))
+      .array(z.object({ id: z.number(), quantity: z.number() })) //TODO:
       .optional(),
   }),
 ])
@@ -78,7 +80,8 @@ export const updateUserSchema = z
 
 export const cartSchema = z.array(
   z.object({
-    id: z.string(),
+    // id: z.string(),
+    id: z.number(), // TODO:
     quantity: z.number(),
   })
 )
@@ -113,11 +116,3 @@ export type cartType = z.infer<typeof cartSchema>
 export type ordersType = z.infer<typeof ordersSchema>
 export type addressType = z.infer<typeof addressSchema>
 export type paymentMethodType = z.infer<typeof paymentMethodSchema>
-
-// export const userSchema = z.object({
-//   uesrname: z.string(),
-//   email: z.string(),
-//   password: z.string(),
-//   mobile: z.string(),
-//   refresh_token: z.string(),
-// })

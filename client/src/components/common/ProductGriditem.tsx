@@ -20,14 +20,12 @@ const Griditem = styled(Paper)(({ theme }) => ({
 }))
 
 const ProductGriditem = ({ product }: { product: productType }) => {
-  console.log("product grid item rendered")
-
   return (
     <Griditem>
       <Card sx={{ maxWidth: 345 }}>
         <CardMedia
           sx={{ height: 140 }}
-          image={product.images[0]}
+          image={product.image}
           title="green iguana"
         />
         <CardContent>

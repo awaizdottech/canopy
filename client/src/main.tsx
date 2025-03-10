@@ -12,7 +12,7 @@ import {
   ProductDetails,
   UserDashboard,
 } from "./pages"
-import { Register } from "./components"
+import { Login, Register } from "./components"
 import AuthCheck from "./auth-wrappers/AuthCheck.tsx"
 import AdminCheck from "./auth-wrappers/AdminCheck.tsx"
 
@@ -61,6 +61,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <Register />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
     ],
   },

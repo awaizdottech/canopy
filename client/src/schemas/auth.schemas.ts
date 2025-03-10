@@ -33,18 +33,30 @@ export const registerSchema = z
     path: ["confirmPassword"],
   })
 
-export const loginSchema = z.discriminatedUnion("loginType", [
-  z.object({
-    loginType: z.literal("email"),
-    email: z.string().trim().email(),
-    password: passwordSchema,
-    mobile: mobileSchema.optional(),
-  }),
+// export const loginSchema = z.discriminatedUnion("loginType", [
+//   z.object({
+//     loginType: z.literal("email"),
+//     email: z.string().trim().email(),
+//     password: passwordSchema,
+//     mobile: mobileSchema.optional(),
+//   }),
 
-  z.object({
-    loginType: z.literal("mobile"),
-    mobile: mobileSchema,
-    password: passwordSchema,
-    email: z.string().trim().email().optional(),
-  }),
-])
+//   z.object({
+//     loginType: z.literal("mobile"),
+//     mobile: mobileSchema,
+//     password: passwordSchema,
+//     email: z.string().trim().email().optional(),
+//   }),
+// ])
+
+export const loginSchema = z.object({
+  emailOrMobile: z.string().refine(
+    value => {
+      const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+      const mobileRegex = /^(\+?91|0)?[6-9]\d{9}$/
+      return emailRegex.test(value) || mobileRegex.test(value)
+    },
+    { message: "Must be a valid email address or 10-digit mobile number" }
+  ),
+  password: passwordSchema,
+})

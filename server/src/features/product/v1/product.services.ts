@@ -1,6 +1,6 @@
 import { getAllProducts, getManyProducts, getOneProduct } from "./product.repo"
 
-export const getProducts = async (list?: number[]) => {
+export const getProducts = async (list?: string[]) => {
   try {
     if (list) {
       if (list.length == 1) return await getOneProduct(list[0])

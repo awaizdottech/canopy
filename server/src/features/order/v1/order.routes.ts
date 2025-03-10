@@ -1,12 +1,24 @@
-import { Request, Response, Router } from "express"
-import { getOrdersController } from "./order.controllers"
+import { Response, Router } from "express"
+import {
+  getOrdersController,
+  updateOrderStatusController,
+} from "./order.controllers"
 import { ApiError } from "../../../helpers/api-standards"
+import {
+  checkAdminAccess,
+  checkUserAccess,
+} from "../../../middlewares/auth.middlewares"
 
 const orderRouter = Router()
 
-orderRouter.route("/").post(getOrdersController)
+orderRouter
+  .route("/")
+  .get(checkUserAccess, checkAdminAccess, getOrdersController)
+orderRouter
+  .route("/update-status")
+  .post(checkUserAccess, checkAdminAccess, updateOrderStatusController)
 
-orderRouter.use((req: Request, res: Response) => {
+orderRouter.use((_, res: Response) => {
   res
     .status(404)
     .json(

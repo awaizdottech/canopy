@@ -16,22 +16,20 @@ interface ErrorResponse {
 }
 
 export const errorHandler: ErrorRequestHandler = (
-  err: Error & { statusCode?: number },
+  error: Error & { statusCode?: number },
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  let error = err
-
   if (!(error instanceof ApiError)) {
     const statusCode = error.statusCode ?? 500
     const message = error.message || "something went wrong"
-    error = new ApiError(statusCode, message, [], err.stack)
+    error = new ApiError(statusCode, message, [], error.stack)
   }
 
   const response: ErrorResponse = {
     ...error,
     ...(process.env.NODE_ENV === "development" ? { stack: error.stack } : {}),
   }
-  res.status(error.statusCode ?? 400).json(response)
+  res.status(error.statusCode ?? 500).json(response)
 }
