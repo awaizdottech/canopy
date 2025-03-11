@@ -191,3 +191,64 @@ user_id - string - foreign key
 createdAt & updatedAt in all tables
 cascade on delete in all tables
 not storing full account numbers in payment_method table
+
+# reflect
+
+- before anything else change db column names to camelCase
+<!-- - add createdAt & updatedAt fields in all tables -->
+
+## server
+
+- begin doing the changes with repo functions first
+- diff between package.json and package-lock.json - refer official or ask source to refer
+- what tsc cmd does
+- types of licenses
+- how env variables are used in nodejs & how does dotenv work
+- tsc v tsc -b cmds
+- tsconfig fields with all possible values
+- checking env variables in nodejs & creating fcuntions to access them
+- rerturn types for all functions & types wherever possible
+- error handling at db conn creation
+- env variable for data limit from frontend
+- extended option in app.ts
+- custom & http defined status codes in nodejs used as variables.
+- no hard coded values
+- morgan details(imnplemented in little more detail in echo, as well as winston), implementation for production & logging levels with respect to production, development, testing etc
+- logging errors in console in dev mode
+- client doesnt need detail messages of what went wrong
+- try catch not needed throughout the backend because of asynchandler - confirm
+- separate features folder for all tables & implementation accordingly
+- auth routes & logic in separate folder - why
+- same names for controllers, services & repo functions if possible - u can differentiate by giving them alias at importing
+- tokens not in body. how to handle them for mobile. how can react code be used for mobile apps. which frontend & how does it send tokens in header
+- separate registration & login, dont do both in register
+- implementing refresh token updation at every access token generation with invalidating/expiring old tokens
+- introducing deleted boolean fields in all tables & giving user option to take that data & then delete their it
+- remove status code from the error object, we dont need the code twice
+- no \* in queries, use specific fields
+- use object notation in db query params instead of array notation
+- types & interfaces in caps. dont create array types of interfaces as we can just use type[] to define an array of that type
+- dont use any type anywhere (not even in db methods)
+- action field in update flows is unnecessary
+- no runtime query generation
+- all packages in package.json details
+
+## client
+
+- whats vite, vite.config.ts
+- how env variables are used in our website as its static & can they be changed
+- how vite works with react. which file is the entry point, how does it know where to start, etc.
+- vite build
+- u have nanoid in package.json, but not used anywhere
+- react-dom package
+- eslint, its config
+- vite-env.d.ts whats that
+- diff between app.css & index.css
+- diff stores for cart, products - why
+- strict mode - resource?
+- what errors are caught by errorElement: <NotFound404 />, so should it be notfound?
+- sx vs style
+- useref in header instead of useState, useref doesnt rerender the component - study about it
+- why two diff menus in header
+- maps arent suitable for the project usecase
+- lodash

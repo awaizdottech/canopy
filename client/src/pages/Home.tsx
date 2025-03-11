@@ -13,7 +13,7 @@ const Home = () => {
 
   useEffect(() => {
     try {
-      if ((products?.size ?? 0) < 30) getProducts()
+      getProducts()
     } catch (error: any) {
       setError(error)
     }

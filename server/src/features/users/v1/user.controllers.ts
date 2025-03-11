@@ -36,7 +36,7 @@ const options = {
   httpsOnly: true,
   secure: process.env.NODE_ENV === "production",
   sameSite: "lax" as const,
-  // signed: true,
+  signed: true,
   ...(process.env.NODE_ENV === "production" && {
     domain: process.env.FRONTEND_URL,
   }),
@@ -116,8 +116,7 @@ export const loginUserController = asyncHandler(
 
 export const refreshTokensController = asyncHandler(
   async (req: Request, res: Response) => {
-    const incomingRefreshToken =
-      req.signedCookies.refreshToken || req.body.refreshToken
+    const incomingRefreshToken = req.signedCookies.refreshToken
     if (!incomingRefreshToken)
       return res.status(400).json(new ApiError(400, "refresh token missing"))
 

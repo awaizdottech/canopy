@@ -42,7 +42,7 @@ export const registerSchema = z.object({
   mobile: mobileSchema,
   password: passwordSchema,
   // cart: z.array(z.object({ id: z.string(), quantity: z.number() })).optional(),
-  cart: z.array(z.object({ id: z.number(), quantity: z.number() })).optional(), // TODO:
+  cart: z.array(z.object({ id: z.number(), quantity: z.number() })), // TODO:
 })
 
 export const loginSchema = z.discriminatedUnion("loginType", [

@@ -47,13 +47,11 @@ const AvatarMenu = ({
       }}
       open={isMenuOpen}
       onClose={handleMenuClose}>
-      <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
       <MenuItem onClick={handleMenuClose}>
-        {userRole == "admin" ? (
-          <Link to="/admin">Dashboard</Link>
-        ) : (
-          "My account"
-        )}
+        <Link to="/profile">Profile</Link>
+      </MenuItem>
+      <MenuItem onClick={handleMenuClose}>
+        {userRole == "admin" ? <Link to="/admin">Dashboard</Link> : "My Orders"}
       </MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
     </Menu>

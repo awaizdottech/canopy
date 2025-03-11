@@ -110,9 +110,10 @@ export const confirmOrder = (orderItemsIDs: number[], username: string) => {
   }
 }
 
-export const getOrderedItems = () => {
+export const getOrderedItems = async () => {
   const allOrders = JSON.parse(localStorage.getItem("allOrders") ?? "[]")
   const allOrdersIDs = Object.keys(allOrders)
+  console.log(await superAxios("get", "/orders"))
   return {
     orderedItems: allOrdersIDs.map((orderId: string) =>
       useProductStore.getState().products.get(orderId)
@@ -129,3 +130,8 @@ export const isProductInCart = (
   cart.forEach(item => (item.id == id ? (check = true) : (check = false)))
   return check
 }
+
+// export const updateCartItemQuantity=(action:'increase'|'decrease',itemID:string)=>{
+//   const cart=useUserStore.getState().user.cart
+//   if(action=='increase') cart.forEach(item=>item.)
+// }

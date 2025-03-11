@@ -1,15 +1,22 @@
 import Box from "@mui/material/Box"
 import { ProductGriditem } from "../components"
 import { getOrderedItems } from "../services/user.services"
+import { useEffect, useState } from "react"
 
 const AdminPortal = () => {
   console.log("admin portal ran")
+  const [orders, setOrders] = useState<any>([])
 
-  const { orderedItems, allOrders } = getOrderedItems()
+  useEffect(() => {
+    ;(async () => {
+      const orders = await getOrderedItems()
+      setOrders(orders)
+    })()
+  }, [])
 
   return (
     <>
-      {orderedItems.map(product =>
+      {/* {orderedItems.map(product =>
         product ? (
           <Box component="div" key={product.id}>
             <p>
@@ -22,7 +29,7 @@ const AdminPortal = () => {
             <ProductGriditem product={product} />
           </Box>
         ) : null
-      )}
+      )} */}
     </>
   )
 }

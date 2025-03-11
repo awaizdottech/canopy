@@ -13,7 +13,7 @@ import {
   getOrders,
   getPaymentMethods,
   getRole,
-  getUserIfExists,
+  getUser,
   removeFromAddresses,
   removeFromCart,
   removeFromPaymentMethods,
@@ -35,9 +35,7 @@ export const regitserUserService = async (
   registerInputs: registerInputsType
 ) => {
   try {
-    console.log(await getUserIfExists("email", registerInputs.email), "hello")
-
-    if (await getUserIfExists("email", registerInputs.email))
+    if (await getUser("email", registerInputs.email))
       throw new ApiError(400, "user already exists")
 
     const { cart, ...user } = registerInputs
@@ -56,7 +54,7 @@ export const regitserUserService = async (
     const updatedFields = await updateUser(updateQuery, values)
 
     let savedCart
-    if (registerInputs.cart?.length) {
+    if (registerInputs.cart.length) {
       const { insertQuery, values } = addToCartQueryGenerator(
         id,
         registerInputs.cart
@@ -81,10 +79,9 @@ export const regitserUserService = async (
 export const loginUserService = async (loginInputs: loginInputsType) => {
   try {
     let user
-    if (loginInputs.email)
-      user = await getUserIfExists("email", loginInputs.email)
+    if (loginInputs.email) user = await getUser("email", loginInputs.email)
     else if (loginInputs.mobile)
-      user = await getUserIfExists("mobile", loginInputs.mobile)
+      user = await getUser("mobile", loginInputs.mobile)
     console.log("user from loginUserService", user)
 
     if (!user) throw new ApiError(400, "user doesnt exist")
@@ -148,7 +145,7 @@ export const refreshTokensService = async (incomingRefreshToken: string) => {
     throw new ApiError(401, "invalid refresh token")
 
   try {
-    const user = await getUserIfExists("id", decodedToken.id)
+    const user = await getUser("id", decodedToken.id)
     if (!user) throw new ApiError(400, "user doesnt exist")
 
     if (incomingRefreshToken !== user.data.refreshToken)

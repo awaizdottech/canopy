@@ -10,6 +10,7 @@ import {
   Home,
   NotFound404,
   ProductDetails,
+  Profile,
   UserDashboard,
 } from "./pages"
 import { Login, Register } from "./components"
@@ -59,6 +60,14 @@ const router = createBrowserRouter([
         ),
       },
       {
+        path: "profile",
+        element: (
+          <AuthCheck>
+            <Profile />
+          </AuthCheck>
+        ),
+      },
+      {
         path: "/register",
         element: <Register />,
       },
@@ -71,7 +80,7 @@ const router = createBrowserRouter([
 ])
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <RouterProvider router={router} />
-  </StrictMode>
+  // <StrictMode>
+  <RouterProvider router={router} />
+  // </StrictMode>
 )

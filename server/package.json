@@ -1,5 +1,5 @@
 {
-  "name": "server",
+  "name": "canopy-server",
   "version": "1.0.0",
   "main": "src/index.ts",
   "scripts": {
@@ -7,9 +7,9 @@
     "build": "tsc"
   },
   "keywords": [],
-  "author": "",
+  "author": "awaizdottech",
   "license": "ISC",
-  "description": "",
+  "description": "a node js sevrer with postgre sql as db",
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/cookie-parser": "^1.4.8",

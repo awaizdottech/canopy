@@ -1,22 +1,22 @@
-import { db } from "../../.."
+import { db } from "../../../db/db"
 import { ApiError } from "../../../helpers/api-standards"
 import { paymentMethodType } from "./user.schemas"
 
 // db operations
 
-export const getUserIfExists = async (
-  identifier: "email" | "mobile" | "id",
+export const getUser = async (
+  identifier: "email" | "mobile" | "id", // unnecessary
   value: string
 ) => {
   try {
     if (identifier == "id")
-      return await db.oneOrNone("select * from users where id=$1", [value])
+      return await db.oneOrNone(`select * from users where id=$1`, [value])
     else if (identifier == "email")
       return await db.oneOrNone("select * from users where email=$1", [value])
     else
       return await db.oneOrNone("select * from users where mobile=$1", [value])
   } catch (error) {
-    throw new ApiError(500, "failed to getUserIfExists")
+    throw new ApiError(500, "failed to getUser")
   }
 }
 
@@ -27,8 +27,6 @@ export const createUser = async (newUser: {
   mobile: string
 }) => {
   try {
-    console.log("reached user repo createuser")
-
     return await db.one(
       "insert into users(username, email, password, mobile, role_id) values ($1, $2, $3,$4, $5) returning id,username, email, mobile;",
       [newUser.username, newUser.email, newUser.password, newUser.mobile, 1]
@@ -48,7 +46,9 @@ export const updateUser = async (updateQuery: string, values: string[]) => {
 
 export const getCart = async (userId: string) => {
   try {
-    return await db.any("select * from cart_items where user_id=$1", [userId])
+    return await db.manyOrNone("select * from cart_items where user_id=$1", [
+      userId,
+    ])
   } catch (error) {
     throw new ApiError(500, "failed to getcart")
   }
@@ -61,7 +61,7 @@ export const addToCart = async (
   try {
     console.log(insertQuery, values)
 
-    return await db.any(insertQuery, values)
+    return await db.manyOrNone(insertQuery, values)
   } catch (error) {
     throw new ApiError(500, "failed to addToCart")
   }
@@ -131,7 +131,7 @@ export const removeFromAddresses = async (addressId: string) => {
   try {
     return await db.one("delete from addresses where id=$1 returning *", [
       addressId,
-    ])
+    ]) // never delete any data
   } catch (error) {
     throw new ApiError(500, "failed to removeFromAddresses")
   }

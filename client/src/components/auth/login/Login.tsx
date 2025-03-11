@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginUser } from "../../../services/user.services"
 import { Button, TextField } from "@mui/material"
 import LoginPasswordInput from "./LoginPasswordInput"
+import { Link } from "react-router"
 
 export type loginInputsType = z.infer<typeof loginSchema>
 
@@ -38,6 +39,9 @@ const Login = () => {
       <Button variant="contained" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Loading..." : "Login"}
       </Button>
+      <Link to="/register">
+        <Button variant="contained">Register</Button>
+      </Link>
     </form>
   )
 }

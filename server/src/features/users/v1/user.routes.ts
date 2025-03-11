@@ -17,7 +17,6 @@ const userRouter = Router()
 userRouter.route("/register").post(registerUserController)
 userRouter.route("/login").post(loginUserController)
 userRouter.route("/refresh").get(refreshTokensController)
-// userRouter.use(checkUserAccess) is bad for wrong routes as it'll throw unauthorised for them
 userRouter.route("/update-profile").patch(checkUserAccess, updateUserController)
 userRouter.route("/update-cart").patch(checkUserAccess, updateCartController)
 userRouter
@@ -30,7 +29,7 @@ userRouter
   .route("/update-payment-methods")
   .patch(checkUserAccess, updatePaymentMethodsController)
 
-userRouter.use((req: Request, res: Response) => {
+userRouter.use((_, res: Response) => {
   res
     .status(404)
     .json(

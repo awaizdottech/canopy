@@ -4,7 +4,7 @@ import { updateOrderType } from "./order.schemas"
 
 export const getAllOrders = async () => {
   try {
-    return await db.many("select * from orders;")
+    return await db.manyOrNone("select * from orders;")
   } catch (error) {
     throw new ApiError(500, "failed to getAllOrders")
   }

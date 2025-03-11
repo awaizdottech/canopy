@@ -6,6 +6,7 @@ import { z } from "zod"
 import { registerSchema } from "../../../schemas/auth.schemas"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { registerAndLoginUser } from "../../../services/user.services"
+import { Link } from "react-router"
 
 export type registerInputsType = z.infer<typeof registerSchema>
 
@@ -63,6 +64,9 @@ const Register = () => {
       <Button variant="contained" type="submit" disabled={isSubmitting}>
         {isSubmitting ? "Loading..." : "Register"}
       </Button>
+      <Link to="/login">
+        <Button variant="contained">Login</Button>
+      </Link>
     </form>
   )
 }

@@ -24,9 +24,9 @@ const superAxios = async (
     if (method !== "get" && method !== "delete")
       return await axiosInstance[method](url, body, {
         ...overRides,
-        withCredentials: false,
+        withCredentials: true,
       })
-    else return await axiosInstance[method](url, { withCredentials: false })
+    else return await axiosInstance[method](url, { withCredentials: true })
   } catch (err: any) {
     if (err.code === "ECONNABORTED")
       console.error("Request timeout:", err.message)
