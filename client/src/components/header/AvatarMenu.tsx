@@ -1,6 +1,6 @@
 import { Menu, MenuItem } from "@mui/material"
 import { useCallback } from "react"
-import useUserStore from "../../store/user-store"
+import useUserStore from "../../stores/user-store"
 import { Link } from "react-router"
 
 type propsType = {

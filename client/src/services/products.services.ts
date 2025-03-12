@@ -1,4 +1,4 @@
-import useProductStore, { productType } from "../store/products-store"
+import useProductStore, { productType } from "../stores/products-store"
 import { superAxios } from "../utils"
 
 export const getProducts = async (id?: string) => {

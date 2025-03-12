@@ -1,7 +1,7 @@
 import { loginInputsType } from "../components/auth/login/Login"
 import { registerInputsType } from "../components/auth/register/Register"
-import useProductStore, { productType } from "../store/products-store"
-import useUserStore from "../store/user-store"
+import useProductStore, { productType } from "../stores/products-store"
+import useUserStore from "../stores/user-store"
 import { superAxios } from "../utils"
 
 export const registerAndLoginUser = async (data: registerInputsType) => {

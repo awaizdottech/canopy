@@ -1,10 +1,10 @@
 import { useParams } from "react-router"
-import useProductStore from "../store/products-store"
+import useProductStore from "../stores/products-store"
 import { ProductGriditem } from "../components"
 import Button from "@mui/material/Button"
 import { useEffect, useState } from "react"
 import { getProducts } from "../services/products.services"
-import useUserStore from "../store/user-store"
+import useUserStore from "../stores/user-store"
 import { Box } from "@mui/material"
 import { isProductInCart } from "../services/user.services"
 

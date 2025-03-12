@@ -6,7 +6,7 @@ import {
   styled,
   Typography,
 } from "@mui/material"
-import { productType } from "../../store/products-store"
+import { productType } from "../../stores/products-store"
 
 const Griditem = styled(Paper)(({ theme }) => ({
   backgroundColor: "#fff",

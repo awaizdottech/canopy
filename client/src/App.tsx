@@ -1,6 +1,6 @@
 import { Outlet } from "react-router"
 import "./App.css"
-import { Footer, Header } from "./components"
+import { Header } from "./components"
 import { Box, CssBaseline } from "@mui/material"
 
 const App = () => {
@@ -16,7 +16,6 @@ const App = () => {
       <CssBaseline />
       <Header />
       <Outlet />
-      <Footer />
     </Box>
   )
 }

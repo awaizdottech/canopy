@@ -1,12 +1,12 @@
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid2"
 import Button from "@mui/material/Button"
-import useUserStore from "../store/user-store"
+import useUserStore from "../stores/user-store"
 import { ProductGriditem } from "../components"
 import { Link, useNavigate } from "react-router"
 import { useCallback } from "react"
 import { getCartItems, getCartItemsTotal } from "../services/user.services"
-import { productType } from "../store/products-store"
+import { productType } from "../stores/products-store"
 
 const Cart = () => {
   console.log("cart rendered")

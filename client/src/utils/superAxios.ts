@@ -1,5 +1,5 @@
 import axios from "axios"
-import { conf } from "../conf/conf"
+import { conf } from "../config/config"
 import axiosRetry from "axios-retry"
 
 type HttpMethod = "get" | "post" | "put" | "delete" | "patch"

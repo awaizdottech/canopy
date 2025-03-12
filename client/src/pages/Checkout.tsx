@@ -1,7 +1,7 @@
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid2"
 import Button from "@mui/material/Button"
-import useUserStore from "../store/user-store"
+import useUserStore from "../stores/user-store"
 import { ProductGriditem } from "../components"
 import { useCallback } from "react"
 import { confirmOrder, getOrderItems } from "../services/user.services"

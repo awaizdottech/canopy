@@ -1,6 +1,6 @@
 import { Box, Grid2 as Grid } from "@mui/material"
 import { ProductGriditem } from "../components"
-import useProductStore from "../store/products-store"
+import useProductStore from "../stores/products-store"
 import { Link } from "react-router"
 import { useEffect, useState } from "react"
 import { getProducts } from "../services/products.services"

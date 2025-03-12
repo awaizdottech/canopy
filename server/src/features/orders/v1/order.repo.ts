@@ -1,4 +1,4 @@
-import { db } from "../../.."
+import { db } from "../../../db/db"
 import { ApiError } from "../../../helpers/api-standards"
 import { updateOrderType } from "./order.schemas"
 

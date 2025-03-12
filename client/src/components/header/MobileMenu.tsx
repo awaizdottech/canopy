@@ -3,7 +3,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import LoginIcon from "@mui/icons-material/Login"
 import { Badge, IconButton, Menu, MenuItem } from "@mui/material"
 import { Link } from "react-router"
-import useUserStore from "../../store/user-store"
+import useUserStore from "../../stores/user-store"
 
 type propsType = {
   mobileMoreAnchorEl: HTMLElement | null

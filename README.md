@@ -194,13 +194,14 @@ not storing full account numbers in payment_method table
 
 # reflect
 
-- before anything else change db column names to camelCase
 <!-- - add createdAt & updatedAt fields in all tables -->
 
 ## server
 
 - begin doing the changes with repo functions first
-- diff between package.json and package-lock.json - refer official or ask source to refer
+
+* diff between package.json and package-lock.json - refer official or ask source to refer
+
 - what tsc cmd does
 - types of licenses
 - how env variables are used in nodejs & how does dotenv work
@@ -236,7 +237,7 @@ not storing full account numbers in payment_method table
 ## client
 
 - whats vite, vite.config.ts
-- how env variables are used in our website as its static & can they be changed
+- how env variables are used in our website as its static & can they be changed. do we use other packages to handle env variables in react other than vite
 - how vite works with react. which file is the entry point, how does it know where to start, etc.
 - vite build
 - u have nanoid in package.json, but not used anywhere
@@ -251,4 +252,8 @@ not storing full account numbers in payment_method table
 - useref in header instead of useState, useref doesnt rerender the component - study about it
 - why two diff menus in header
 - maps arent suitable for the project usecase
+- generic name for superaxios & separate functions for get, post, put, delete
+- no password format hint in login
+- bundler configurations for min bundle size
+- monorepo at the end
 - lodash
