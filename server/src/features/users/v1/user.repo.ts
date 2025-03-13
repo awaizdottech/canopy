@@ -1,9 +1,9 @@
 import { db } from "../../../db/db"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 import { paymentMethodType } from "./user.schemas"
 
 // db operations
-
+//  redone
 export const getUser = async (
   identifier: "email" | "mobile" | "id", // unnecessary
   value: string
@@ -20,6 +20,7 @@ export const getUser = async (
   }
 }
 
+// redone
 export const createUser = async (newUser: {
   username: string
   email: string
@@ -44,6 +45,7 @@ export const updateUser = async (updateQuery: string, values: string[]) => {
   }
 }
 
+// redone
 export const getCart = async (userId: string) => {
   try {
     return await db.manyOrNone("select * from cart_items where user_id=$1", [

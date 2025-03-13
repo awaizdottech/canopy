@@ -1,5 +1,5 @@
 import { db } from "../../../db/db"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 import { updateOrderType } from "./order.schemas"
 
 export const getAllOrders = async () => {

@@ -3,7 +3,7 @@ import {
   getOrdersController,
   updateOrderStatusController,
 } from "./order.controllers"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 import {
   checkAdminAccess,
   checkUserAccess,

@@ -1,5 +1,5 @@
 import { db } from "../../../db/db"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 
 export const getAllProducts = async () => {
   try {

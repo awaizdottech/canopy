@@ -1,5 +1,6 @@
 import { app } from "./app"
 import { connectDB } from "./db/db"
+import { check } from "./dev"
 
 const main = async () => {
   app.listen(process.env.PORT, () =>
@@ -9,3 +10,4 @@ const main = async () => {
 }
 
 main()
+check()

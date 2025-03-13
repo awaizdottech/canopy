@@ -1,5 +1,5 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express"
-import { ApiError } from "../helpers/api-standards"
+import { ApiError } from "../helpers/api-generics.helpers"
 
 export const asyncHandler = (
   requestHandler: (req: Request, res: Response, next: NextFunction) => void

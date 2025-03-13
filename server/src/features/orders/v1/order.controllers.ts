@@ -1,6 +1,6 @@
 import { asyncHandler } from "../../../middlewares/error.middlewares"
 import { Request, Response } from "express"
-import { ApiError, ApiResponse } from "../../../helpers/api-standards"
+import { ApiError, ApiResponse } from "../../../helpers/api-generics.helpers"
 import { getAllOrdersService, updateOrderService } from "./order.services"
 import { updateOrderSchema } from "./order.schemas"
 

@@ -1,7 +1,7 @@
 import { Request, Response } from "express"
 import { asyncHandler } from "../../../middlewares/error.middlewares"
 import { getProducts } from "./product.services"
-import { ApiError, ApiResponse } from "../../../helpers/api-standards"
+import { ApiError, ApiResponse } from "../../../helpers/api-generics.helpers"
 import { productIDsList } from "./product.schemas"
 
 export const getProductsController = asyncHandler(

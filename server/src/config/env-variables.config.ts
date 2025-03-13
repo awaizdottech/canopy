@@ -1,0 +1,14 @@
+// NODE_ENV="production"
+// PORT="3000"
+// ACCESS_TOKEN_SECRET="short-circuit"
+// ACCESS_TOKEN_EXPIRY=86400000 # 1 day
+// REFRESH_TOKEN_EXPIRY=604800000 # 1 week
+// REFRESH_TOKEN_SECRET="thunder"
+// COOKIE_SECRET='tasty'
+// FRONTEND_URL="http://localhost:5173"
+// CORS_ORIGIN="http://localhost:5173"
+// DB_USERNAME="awaizdottech"
+// DB_PASSWORD="canopy"
+// DB_HOST="localhost"
+// DB_PORT="5432"
+// DB_NAME="canopyDB"

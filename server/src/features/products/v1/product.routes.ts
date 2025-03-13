@@ -1,5 +1,5 @@
 import { Request, Response, Router } from "express"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 import { getProductsController } from "./product.controllers"
 
 const productRouter = Router()

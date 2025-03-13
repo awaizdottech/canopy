@@ -9,7 +9,7 @@ import {
   updateAddressesController,
   updatePaymentMethodsController,
 } from "./user.controllers"
-import { ApiError } from "../../../helpers/api-standards"
+import { ApiError } from "../../../helpers/api-generics.helpers"
 import { checkUserAccess } from "../../../middlewares/auth.middlewares"
 
 const userRouter = Router()

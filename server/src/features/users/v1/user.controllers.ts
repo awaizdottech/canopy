@@ -11,7 +11,7 @@ import {
   registerSchema,
   updateUserSchema,
 } from "./user.schemas"
-import { ApiError, ApiResponse } from "../../../helpers/api-standards"
+import { ApiError, ApiResponse } from "../../../helpers/api-generics.helpers"
 import { asyncHandler } from "../../../middlewares/error.middlewares"
 import {
   loginUserService,

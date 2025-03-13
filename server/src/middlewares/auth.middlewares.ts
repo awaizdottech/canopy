@@ -1,5 +1,5 @@
 import { getRole, getUser } from "../features/users/v1/user.repo"
-import { ApiError } from "../helpers/api-standards"
+import { ApiError } from "../helpers/api-generics.helpers"
 import { asyncHandler } from "./error.middlewares"
 import jwt from "jsonwebtoken"
 
