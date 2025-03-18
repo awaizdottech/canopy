@@ -6,7 +6,6 @@ import productRouter from "./features/products/v1/product.routes"
 import orderRouter from "./features/orders/v1/order.routes"
 import { errorHandler } from "./middlewares/error.middlewares"
 import morgan from "morgan"
-import "dotenv/config"
 
 export const app = express()
 app.use(express.json({ limit: "16kb" })) // should be in a env var

@@ -1,6 +1,48 @@
+import pgPromise from "pg-promise"
 import { db } from "../../../db/db"
 import { ApiError } from "../../../helpers/api-generics.helpers"
-import { paymentMethodType } from "./user.schemas"
+import { paymentMethodType, updateUserInputsType } from "./user.schemas"
+
+class UserRepoLayer {
+  private db: pgPromise.IDatabase<any>
+
+  constructor(db: pgPromise.IDatabase<any>) {
+    this.db = db
+  }
+
+  updateUser = (updates: updateUserInputsType) => {}
+}
+
+// generic way to skip NULL/undefined values for strings:
+// function str(column) {
+//   return {
+//       name: column,
+//       skip: c => c.value === null || c.value === undefined
+//   };
+// }
+
+// // Creating a reusable ColumnSet for all updates:
+// const csGeneric = new pgp.helpers.ColumnSet([
+//   str('string1'), str('string2'), str('string3'), str('string4'), str('string5'),
+//   str('string6'), int('integer1'), int('integer2'), int('integer3'),
+//   str('date1'), str('date2'), str('date3')
+// ], {table: 'generic1'});
+
+// // Your new request handler:
+// async function updateRecord(req, res, next) {
+
+//   const update = pgp.helpers.update(req.body, csGeneric) + ' WHERE id = ' +
+//       parseInt(req.params.id);
+
+//   try {
+//           await db.none(update);
+//           res.status(200);
+//   } catch(err) {
+//       return next(err);
+//   }
+// }
+
+export const userRepoLayer = new UserRepoLayer(db)
 
 // db operations
 //  redone
@@ -56,6 +98,7 @@ export const getCart = async (userId: string) => {
   }
 }
 
+// redone
 export const addToCart = async (
   insertQuery: string,
   values: (string | number)[]

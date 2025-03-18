@@ -1,4 +1,4 @@
-import pgPromise from "pg-promise"
+import pgPromise, { PreparedStatement as PS } from "pg-promise"
 import { db } from "../../../db/db"
 
 class AuthRepoLayer {
@@ -19,12 +19,23 @@ class AuthRepoLayer {
       newUser
     )
 
-  getUser = (value: string) => {
+  getUser = (value: string) =>
     this.db.one(
-      'select id, username, email, mobile, "roleId", "profilePic" from users where id=$1 or email=$1 or mobile=$1',
-      [value]
+      new PS({
+        text: 'select id, username, email, mobile, "roleId", "profilePic" from users where id=$1 or email=$1 or mobile=$1',
+        values: [value],
+      })
     )
-  }
+
+  updateRefreshToken = (refreshToken: string) =>
+    this.db.one(
+      new PS({
+        text: 'update users set "refreshToken"=$1',
+        values: [refreshToken],
+      })
+    )
+
+  // update queries using update clause
 }
 
 export const authRepoLayer = new AuthRepoLayer(db)

@@ -235,6 +235,10 @@ not storing full account numbers in payment_method table
 - action field in update flows is unnecessary
 - all packages in package.json details
 
+### later
+
+- location based stock & order handling for both customer & admin
+
 ### done
 
 - diff between package.json and package-lock.json - refer official or ask source to refer
@@ -261,6 +265,9 @@ not storing full account numbers in payment_method table
 - no password format hint in login
 - no cart products listed on home page
 - comments that document the code via jsdoc or tsdoc etc
+- should I separate stores as per backend features? - ask
 - bundler configurations for min bundle size
 - monorepo at the end
 - lodash
+
+# use the libraries u depend on to their full potential. start by fully going through their github readme first
