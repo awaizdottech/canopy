@@ -94,7 +94,7 @@ user:
 - role - string
 - tokens - array of strings
   fields from here not needed for admin
-- cart - array of objects - productID, quantity
+- cart - array of objects - productId, quantity
 - orders - past & current - array of orderIDs
 - addresses - array of objects - address, city, state, country, pincode
 - payment methods - array of objects - cardNumber, expiryDate, cvv, nameOnCard
@@ -102,7 +102,7 @@ user:
 
 product:
 
-- productID - string
+- productId - string
 - productName - string
 - productPrice - number
 - productQuantity - number
@@ -114,7 +114,7 @@ product:
 
 orders:
 
-- productID - string
+- productId - string
 - orderID - string
 - orderDate - date
 - orderStatus - string
@@ -205,7 +205,8 @@ not storing full account numbers in payment_method table
 - no \* in queries, use specific fields
 - how env variables are used in nodejs & how does dotenv work
 - checking env variables in nodejs & creating fcuntions to access them
-- custom & http defined status codes in nodejs used as variables.
+- custom & http defined status codes in nodejs used as variables
+- implementing refresh token updation at every access token generation with invalidating/expiring old tokens
 - morgan details(imnplemented in little more detail in echo, as well as winston), implementation for production & logging levels with respect to production, development, testing etc
 - logging errors in console in dev mode
 - client doesnt need detail messages of what went wrong
@@ -229,7 +230,6 @@ not storing full account numbers in payment_method table
 - try catch not needed throughout api flows except repo functions because of asynchandler - confirm
 - tokens not in body. how to handle them for mobile. how can react code be used for mobile apps. which frontend & how does it send tokens in header
 - separate registration & login, dont do both in register
-- implementing refresh token updation at every access token generation with invalidating/expiring old tokens
 - dont use 'any' type anywhere (not even in db methods)
 - arrow vs normal functions
 - action field in update flows is unnecessary
@@ -238,6 +238,8 @@ not storing full account numbers in payment_method table
 ### later
 
 - location based stock & order handling for both customer & admin
+- what other file structures can be used
+- rate limiting
 
 ### done
 
@@ -271,3 +273,8 @@ not storing full account numbers in payment_method table
 - lodash
 
 # use the libraries u depend on to their full potential. start by fully going through their github readme first
+
+## where did I lose my marks & for what
+
+- its better to give default params instead of using optional chaining whenever u want to use that
+- non-auth shouldnt throw errors with details

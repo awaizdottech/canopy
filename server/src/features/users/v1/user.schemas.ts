@@ -6,7 +6,7 @@
 // - role - string
 // - tokens - array of strings
 // fields from here not needed for admin
-// - cart - array of objects - productID, quantity
+// - cart - array of objects - productId, quantity
 // - orders - past & current - array of orderIDs
 // - addresses - array of objects - address, city, state, country, pincode
 // - payment methods - array of objects - cardNumber, expiryDate, cvv, nameOnCard
@@ -14,7 +14,7 @@
 
 import { z } from "zod"
 
-const passwordSchema = z
+export const passwordSchema = z
   .string()
   .trim()
   .regex(
@@ -25,76 +25,40 @@ const passwordSchema = z
     }
   )
 
-const mobileSchema = z
+export const mobileSchema = z
   .string()
   .regex(/^(\+?91|0)?[6-9]\d{9}$/, "Please enter a valid Indian mobile number")
 
-const usernameSchema = z
+export const usernameSchema = z
   .string()
   .trim()
   .min(2, "Username must be at least 2 characters")
   .max(20, "Username must be no more than 20 characters")
   .toLowerCase()
 
-export const registerSchema = z.object({
-  username: usernameSchema,
-  email: z.string().trim().email().max(40),
-  mobile: mobileSchema,
-  password: passwordSchema,
-  // cart: z.array(z.object({ id: z.string(), quantity: z.number() })).optional(),
-  cart: z.array(z.object({ id: z.number(), quantity: z.number() })), // TODO:
-})
-
-export const loginSchema = z.discriminatedUnion("loginType", [
-  z.object({
-    loginType: z.literal("email"),
-    email: z.string().trim().email().max(40),
-    password: passwordSchema,
-    mobile: mobileSchema.optional(),
-    cart: z
-      // .array(z.object({ id: z.string(), quantity: z.number() }))
-      .array(z.object({ id: z.number(), quantity: z.number() })) // TODO: temp
-      .optional(),
-  }),
-
-  z.object({
-    loginType: z.literal("mobile"),
-    mobile: mobileSchema,
-    password: passwordSchema,
-    email: z.string().trim().email().optional(),
-    cart: z
-      // .array(z.object({ id: z.string(), quantity: z.number() }))
-      .array(z.object({ id: z.number(), quantity: z.number() })) //TODO:
-      .optional(),
-  }),
-])
+export const emailSchema = z.string().trim().email().max(40)
 
 export const updateUserSchema = z
   .object({
     username: usernameSchema,
-    email: z.string().trim().email().max(40),
+    email: emailSchema,
     mobile: mobileSchema,
     password: passwordSchema,
   })
   .partial()
 
-export const cartSchema = z.array(
-  z.object({
-    // id: z.string(),
-    id: z.number(), // TODO:
-    quantity: z.number(),
-  })
-)
+export const cartItemSchema = z.object({
+  productId: z.string(), // TODO:
+  quantity: z.number(),
+})
 
-export const ordersSchema = z.array(
-  z.object({
-    id: z.string(),
-    quantity: z.number(),
-    total: z.number(),
-    paymentMethodId: z.string(),
-    addressId: z.string(),
-  })
-)
+export const orderItemSchema = z.object({
+  id: z.string(),
+  quantity: z.number(),
+  total: z.number(),
+  paymentMethodId: z.string(),
+  addressId: z.string(),
+})
 
 export const addressSchema = z.object({
   address: z.string().max(200, "limit 200"),
@@ -109,10 +73,7 @@ export const paymentMethodSchema = z.object({
   id: z.string().optional(),
 })
 
-export type registerInputsType = z.infer<typeof registerSchema>
-export type loginInputsType = z.infer<typeof loginSchema>
 export type updateUserInputsType = z.infer<typeof updateUserSchema>
-export type cartType = z.infer<typeof cartSchema>
-export type ordersType = z.infer<typeof ordersSchema>
+export type ordersType = z.infer<typeof orderItemSchema>
 export type addressType = z.infer<typeof addressSchema>
 export type paymentMethodType = z.infer<typeof paymentMethodSchema>

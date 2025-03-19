@@ -2,7 +2,7 @@ import { Request, Response } from "express"
 import { asyncHandler } from "../../../middlewares/error.middlewares"
 import { getProducts } from "./product.services"
 import { ApiError, ApiResponse } from "../../../helpers/api-generics.helpers"
-import { productIDsList } from "./product.schemas"
+import { productIdsList } from "./product.schemas"
 
 export const getProductsController = asyncHandler(
   async (req: Request, res: Response) => {
@@ -12,7 +12,7 @@ export const getProductsController = asyncHandler(
       if (id) finalResponse = await getProducts([id])
       else finalResponse = await getProducts()
     } else {
-      const validation = productIDsList.safeParse(req.body)
+      const validation = productIdsList.safeParse(req.body)
       if (!validation.success)
         throw new ApiError(
           400,

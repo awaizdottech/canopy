@@ -2,7 +2,7 @@ import { z } from "zod"
 
 // product:
 
-// productID - string
+// productId - string
 // productName - string
 // productCategory - string
 // productDescription - string
@@ -30,4 +30,4 @@ export const productSchema = z.object({
   ),
 })
 
-export const productIDsList = z.array(z.string()).nonempty()
+export const productIdsList = z.array(z.string()).nonempty()

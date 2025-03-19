@@ -19,7 +19,6 @@ export const connectDB = async () => {
       db = connectionPool
       connection.done()
       return
-      // TODO: write else statement after checking the response from log above, define the return type & assign pool to db only if th expected type is returned
     } catch (error) {
       const delay = envVariableConfig.dbConnectionRetryDelay
       console.error(

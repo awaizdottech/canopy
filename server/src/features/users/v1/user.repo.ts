@@ -1,4 +1,4 @@
-import pgPromise from "pg-promise"
+import pgPromise, { PreparedStatement as PS } from "pg-promise"
 import { db } from "../../../db/db"
 import { ApiError } from "../../../helpers/api-generics.helpers"
 import { paymentMethodType, updateUserInputsType } from "./user.schemas"
@@ -10,7 +10,17 @@ class UserRepoLayer {
     this.db = db
   }
 
-  updateUser = (updates: updateUserInputsType) => {}
+  updateUser = () => {
+    return {}
+  }
+
+  getRole = async (roleId: string) =>
+    this.db.one(
+      new PS({
+        text: "select role from roles where id=$1",
+        values: [roleId],
+      })
+    )
 }
 
 // generic way to skip NULL/undefined values for strings:
@@ -58,7 +68,7 @@ export const getUser = async (
     else
       return await db.oneOrNone("select * from users where mobile=$1", [value])
   } catch (error) {
-    throw new ApiError(500, "failed to getUser")
+    throw new ApiError("failed to getUser")
   }
 }
 
@@ -75,7 +85,7 @@ export const createUser = async (newUser: {
       [newUser.username, newUser.email, newUser.password, newUser.mobile, 1]
     )
   } catch (error) {
-    throw new ApiError(500, "failed to createUser.")
+    throw new ApiError("failed to createUser.")
   }
 }
 
@@ -83,7 +93,7 @@ export const updateUser = async (updateQuery: string, values: string[]) => {
   try {
     return await db.one(updateQuery, values)
   } catch (error) {
-    throw new ApiError(500, "failed to updateUser")
+    throw new ApiError("failed to updateUser")
   }
 }
 
@@ -94,7 +104,7 @@ export const getCart = async (userId: string) => {
       userId,
     ])
   } catch (error) {
-    throw new ApiError(500, "failed to getcart")
+    throw new ApiError("failed to getcart")
   }
 }
 
@@ -108,7 +118,7 @@ export const addToCart = async (
 
     return await db.manyOrNone(insertQuery, values)
   } catch (error) {
-    throw new ApiError(500, "failed to addToCart")
+    throw new ApiError("failed to addToCart")
   }
 }
 
@@ -119,15 +129,7 @@ export const removeFromCart = async (cartItemId: number) => {
       cartItemId,
     ])
   } catch (error) {
-    throw new ApiError(500, "failed to removeFromCart")
-  }
-}
-
-export const getRole = async (roleId: string) => {
-  try {
-    return await db.one("select role from roles where id=$1", [roleId])
-  } catch (error) {
-    throw new ApiError(500, "failed to getAddresses")
+    throw new ApiError("failed to removeFromCart")
   }
 }
 
@@ -135,7 +137,7 @@ export const getOrders = async (userId: string) => {
   try {
     return await db.any("select * from orders where user_id=$1", [userId])
   } catch (error) {
-    throw new ApiError(500, "failed to getOrders")
+    throw new ApiError("failed to getOrders")
   }
 }
 
@@ -146,7 +148,7 @@ export const addToOrders = async (
   try {
     return await db.any(insertQuery, values)
   } catch (error) {
-    throw new ApiError(500, "failed to addToOrders")
+    throw new ApiError("failed to addToOrders")
   }
 }
 
@@ -154,7 +156,7 @@ export const getAddresses = async (userId: string) => {
   try {
     return await db.any("select * from addresses where user_id=$1", [userId])
   } catch (error) {
-    throw new ApiError(500, "failed to getAddresses")
+    throw new ApiError("failed to getAddresses")
   }
 }
 
@@ -168,7 +170,7 @@ export const addToAddresses = async (details: {
       [details.userId, details.address]
     )
   } catch (error) {
-    throw new ApiError(500, "failed to addToAddresses")
+    throw new ApiError("failed to addToAddresses")
   }
 }
 
@@ -178,7 +180,7 @@ export const removeFromAddresses = async (addressId: string) => {
       addressId,
     ]) // never delete any data
   } catch (error) {
-    throw new ApiError(500, "failed to removeFromAddresses")
+    throw new ApiError("failed to removeFromAddresses")
   }
 }
 
@@ -188,7 +190,7 @@ export const getPaymentMethods = async (userId: string) => {
       userId,
     ])
   } catch (error) {
-    throw new ApiError(500, "failed to getPaymentMethods")
+    throw new ApiError("failed to getPaymentMethods")
   }
 }
 
@@ -209,7 +211,7 @@ export const addToPaymentMethods = async (
       ]
     )
   } catch (error) {
-    throw new ApiError(500, "failed to addToPaymentMethods")
+    throw new ApiError("failed to addToPaymentMethods")
   }
 }
 
@@ -219,6 +221,6 @@ export const removeFromPaymentMethods = async (paymentMethodId: string) => {
       paymentMethodId,
     ])
   } catch (error) {
-    throw new ApiError(500, "failed to removeFromPaymentMethods")
+    throw new ApiError("failed to removeFromPaymentMethods")
   }
 }

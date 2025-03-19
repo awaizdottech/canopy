@@ -1,35 +1,29 @@
-export class ApiResponse {
-  statusCode: number
-  data: JSON
-  message: string
-  success: boolean
+import { StatusCodes } from "../config/error-codes.config"
 
-  constructor(statusCode: number, data: JSON, message = "Success") {
-    this.statusCode = statusCode
+export class ApiResponse {
+  data: object | any[]
+  message: string
+
+  constructor(message = "Success", data = {}) {
     this.data = data
     this.message = message
-    this.success = statusCode < 400
   }
 }
 
 export class ApiError extends Error {
   statusCode: number
-  errors: any[]
-  data: JSON | null
-  success: boolean
+  data: any[]
   message: string
 
   constructor(
-    statusCode: number,
-    message = "Something went wrong",
-    errors: any[] = [],
+    message = "something went wrong",
+    statusCode = StatusCodes.InternalError,
+    data: any[] = [],
     stack = ""
   ) {
     super()
     this.statusCode = statusCode
-    this.errors = errors
-    this.data = null
-    this.success = false
+    this.data = data
     this.message = message
 
     if (stack) this.stack = stack

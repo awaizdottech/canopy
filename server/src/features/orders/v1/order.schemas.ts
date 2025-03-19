@@ -2,7 +2,7 @@ import { z } from "zod"
 
 export const orderSchema = z.object({
   id: z.string(),
-  productID: z.string(),
+  productId: z.string(),
   date: z.date(),
   status: z.enum(["pending", "approved"]),
   total: z.number(),
