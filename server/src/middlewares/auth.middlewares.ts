@@ -1,44 +1,43 @@
-import { getRole, getUser } from "../features/users/v1/user.repo"
+import { NextFunction, Request, Response } from "express"
+import { envVariableConfig } from "../config/env-variables.config"
+import { userRepoLayer } from "../features/users/v1/user.repo"
 import { ApiError } from "../helpers/api-generics.helpers"
 import { asyncHandler } from "./error.middlewares"
 import jwt from "jsonwebtoken"
+import { authRepoLayer, User } from "../features/auth/v1/auth.repo"
+import { StatusCodes } from "../config/status-codes.config"
 
 declare module "express-serve-static-core" {
   interface Request {
-    user?: any
+    user?: User
   }
 }
 
-export const checkUserAccess = asyncHandler(async (req, _, next) => {
+export const checkUserAccess = async (
+  req: Request,
+  _: Response,
+  next: NextFunction
+) => {
   const accessToken =
     req.signedCookies.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "")
-  if (!accessToken) throw new ApiError(401, "access token missing")
+  if (!accessToken) throw new ApiError("bad request", StatusCodes.BadRequest)
 
-  if (!process.env.ACCESS_TOKEN_SECRET)
-    // check mandatory env variables ryt after serving start
-    throw new ApiError(500, "access token secret is undefined")
+  let decodedToken = jwt.verify(
+    accessToken,
+    envVariableConfig.accessTokenSecret
+  ) as jwt.JwtPayload
 
-  let decodedToken
-  try {
-    decodedToken = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET)
-  } catch (error) {
-    throw new ApiError(401, "invalid access token. it probably expired")
-  }
-
-  if (typeof decodedToken === "string" || !decodedToken)
-    throw new ApiError(401, "unauthorised")
-
-  const user = await getUser("id", decodedToken.id)
-  if (!user) throw new ApiError(401, "user doesnt exist")
+  const user = await authRepoLayer.getUser(decodedToken.id)
+  if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
   req.user = user
 
   next()
-})
+}
 
 export const checkAdminAccess = asyncHandler(async (req, _, next) => {
-  const role = (await getRole(req.user.role_id)).role
-  if (role !== "admin") throw new ApiError(401, "unauthorised")
+  const role = (await userRepoLayer.getRole(req.user!.roleId)).role
+  if (role !== "admin") throw new ApiError("unauthorised")
   next()
 })

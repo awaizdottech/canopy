@@ -17,6 +17,7 @@ import {
   updatePaymentMethodsService,
   updateUserService,
 } from "./user.services"
+import { StatusCodes } from "../../../config/status-codes.config"
 
 declare module "express-serve-static-core" {
   interface Request {
@@ -34,6 +35,7 @@ export const updateUserController = asyncHandler(
         .json(
           new ApiError(
             "user update input validation failed",
+            StatusCodes.BadRequest,
             validation.error.issues
           )
         )
@@ -42,7 +44,7 @@ export const updateUserController = asyncHandler(
       new ApiResponse(
         JSON.parse(
           JSON.stringify({
-            user: await updateUserService(validation.data, req.user.id),
+            user: await updateUserService(validation.data, req.user!.id),
           })
         ),
         "user updated successfully"
@@ -58,14 +60,12 @@ export const updateCartController = asyncHandler(
       return res.status(400).json(new ApiError("cart items Validation failed"))
 
     if (req.action)
-      return res
-        .status(200)
-        .json(
-          new ApiResponse(
-            await updateCartService(req.action, req.body.cart, req.user.id),
-            "cart updated successfully"
-          )
+      return res.status(200).json(
+        new ApiResponse(
+          // await updateCartService(req.action, req.body.cart, req.user.id),
+          "cart updated successfully"
         )
+      )
 
     throw new ApiError("missing action!")
   }
@@ -87,7 +87,7 @@ export const updateOrdersController = asyncHandler(
                 await updateOrdersService(
                   req.orderAction,
                   req.body.orders,
-                  req.user.id
+                  req.user!.id
                 )
               )
             ),
@@ -113,7 +113,7 @@ export const updateAddressesController = asyncHandler(
             await updateAddressesService(
               req.action,
               req.body.address,
-              req.user.id
+              req.user!.id
             ),
             `address ${req.action == "add" ? "added" : "removed"} successfully`
           )
@@ -139,7 +139,7 @@ export const updatePaymentMethodsController = asyncHandler(
             await updatePaymentMethodsService(
               req.action,
               req.body.paymentMethod,
-              req.user.id
+              req.user!.id
             ),
             `paymentMethod ${
               req.action == "add" ? "added" : "removed"

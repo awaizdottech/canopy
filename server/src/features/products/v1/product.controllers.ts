@@ -15,8 +15,8 @@ export const getProductsController = asyncHandler(
       const validation = productIdsList.safeParse(req.body)
       if (!validation.success)
         throw new ApiError(
-          400,
           "product list validation failed",
+          400,
           validation.error.issues
         )
 
@@ -25,8 +25,6 @@ export const getProductsController = asyncHandler(
 
     return res
       .status(200)
-      .json(
-        new ApiResponse(200, finalResponse, "everything worked out somehow ;P")
-      )
+      .json(new ApiResponse("everything worked out somehow ;P", finalResponse))
   }
 )

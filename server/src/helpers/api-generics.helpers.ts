@@ -1,4 +1,4 @@
-import { StatusCodes } from "../config/error-codes.config"
+import { StatusCodes } from "../config/status-codes.config"
 
 export class ApiResponse {
   data: object | any[]
@@ -12,13 +12,13 @@ export class ApiResponse {
 
 export class ApiError extends Error {
   statusCode: number
-  data: any[]
+  data: object | any[]
   message: string
 
   constructor(
     message = "something went wrong",
     statusCode = StatusCodes.InternalError,
-    data: any[] = [],
+    data = {},
     stack = ""
   ) {
     super()

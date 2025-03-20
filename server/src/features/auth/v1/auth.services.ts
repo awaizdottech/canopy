@@ -7,7 +7,7 @@ import { authRepoLayer } from "./auth.repo"
 import { userRepoLayer } from "../../users/v1/user.repo"
 import { cartRepoLayer } from "../../cart/v1/cart.repo"
 import { envVariableConfig } from "../../../config/env-variables.config"
-import { StatusCodes } from "../../../config/error-codes.config"
+import { StatusCodes } from "../../../config/status-codes.config"
 
 export const registerUser = async (
   registerInputs: z.infer<typeof registerSchema>
@@ -21,93 +21,97 @@ export const registerUser = async (
     ...user,
     password: await hashPassword(user.password),
   })
-  const { id, email, username } = savedUser
 
-  let savedCart = []
   if (registerInputs.cart.length)
-    savedCart = await cartRepoLayer.addToCart(
-      registerInputs.cart.map(cartItem => ({ ...cartItem, userId: id }))
+    await cartRepoLayer.addToCart(
+      registerInputs.cart.map(cartItem => ({
+        ...cartItem,
+        userId: savedUser.id,
+      }))
     )
-
-  return {
-    user: {
-      ...savedUser,
-      cart: savedCart,
-      role: (await userRepoLayer.getRole("1")).role,
-    },
-    accessToken: generateAccessToken({ id, email, username }),
-  }
-}
+} // TODO: should I make getuser dynamic in the sense I can tell it to return(login) or not(register) and what to return (login)
 
 export const loginUser = async (loginInputs: z.infer<typeof loginSchema>) => {
   let user
   if (loginInputs.email) user = await authRepoLayer.getUser(loginInputs.email)
   else if (loginInputs.mobile)
     user = await authRepoLayer.getUser(loginInputs.mobile)
-  console.log("user from loginUserService", user)
 
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
-  const { id, email, username, password } = user
   if (
     !(await isPasswordCorrect({
       inputPassword: loginInputs.password,
-      dbPassword: password,
+      dbPassword: user.password,
     }))
   )
     throw new ApiError("bad request", StatusCodes.BadRequest)
 
-  const refreshToken = generateRefreshToken(id)
-  const updatedRefreshToken = await userRepoLayer.()
+  const savedRefreshToken = await authRepoLayer.updateRefreshToken({
+    userId: user.id,
+    value: generateRefreshToken(user.id),
+  })
 
   if (loginInputs.cart.length) {
     await cartRepoLayer.addToCart(
-      loginInputs.cart.map(cartItem => ({ ...cartItem, userId: id }))
+      loginInputs.cart.map(cartItem => ({ ...cartItem, userId: user.id }))
     )
-  }
+  } // TODO: should I modify addToCart to either return(default) or not return based on some argument as we're not using the returning value in this & register service
+
+  const { roleId, password, refreshToken, ...filteredUser } = user
 
   return {
     user: {
-      ...user,
-      role: (await userRepoLayer.getRole(user.role_id)).role,
-      ...updatedRefreshToken,
+      ...filteredUser,
+      role: (await userRepoLayer.getRole(roleId)).role,
     },
-    accessToken: generateAccessToken({ id, email, username }),
+    accessToken: generateAccessToken({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    }),
+    ...savedRefreshToken,
   }
 }
 
 export const refreshTokens = async (incomingRefreshToken: string) => {
-  const decodedToken= jwt.verify(
-      incomingRefreshToken,
-      envVariableConfig.refreshTokenSecret
-    ) as jwt.JwtPayload
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    envVariableConfig.refreshTokenSecret
+  ) as jwt.JwtPayload
   // TODO: invalidate old token on logout & create & store new refresh token every time access token is refreshed/generated
 
   const user = await authRepoLayer.getUser(decodedToken.id)
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
-  if (incomingRefreshToken !== user.data.refreshToken)
+  if (incomingRefreshToken !== user.refreshToken)
     throw new ApiError("bad request", StatusCodes.BadRequest)
 
+  const newRefreshToken = await authRepoLayer.updateRefreshToken({
+    userId: user.id,
+    value: generateRefreshToken(user.id),
+  })
+
   return {
-    user: user.data,
     accessToken: generateAccessToken({
-      id: user.data.id,
-      username: user.data.username,
-      email: user.data.email,
+      id: user.id,
+      username: user.username,
+      email: user.email,
     }),
+    ...newRefreshToken,
   }
 }
 
 export const logout = async (incomingRefreshToken: string) => {
-  const decodedToken= jwt.verify(
-      incomingRefreshToken,
-      envVariableConfig.refreshTokenSecret
-    ) as jwt.JwtPayload
-  // TODO: invalidate old token on logout & create & store new refresh token every time access token is refreshed/generated
+  const decodedToken = jwt.verify(
+    incomingRefreshToken,
+    envVariableConfig.refreshTokenSecret
+  ) as jwt.JwtPayload
 
-  
-  if (await authRepoLayer.updateRefreshToken({userId:decodedToken.id,value:null})) throw new ApiError("bad request", StatusCodes.BadRequest)
+  await authRepoLayer.updateRefreshToken({
+    userId: decodedToken.id,
+    value: null,
+  })
 }
 
 const hashPassword = async (password: string) => bcrypt.hash(password, 10)
@@ -146,5 +150,3 @@ const generateRefreshToken = (id: string) =>
         envVariableConfig.refreshTokenExpiry as jwt.SignOptions["expiresIn"],
     }
   )
-
-// TODO: why is the type predicate needed here

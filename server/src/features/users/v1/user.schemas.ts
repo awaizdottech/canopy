@@ -48,7 +48,7 @@ export const updateUserSchema = z
   .partial()
 
 export const cartItemSchema = z.object({
-  productId: z.string(), // TODO:
+  productId: z.string(),
   quantity: z.number(),
 })
 

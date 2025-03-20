@@ -1,6 +1,6 @@
 import { ErrorRequestHandler, NextFunction, Request, Response } from "express"
 import { ApiError } from "../helpers/api-generics.helpers"
-import { StatusCodes } from "../config/error-codes.config"
+import { StatusCodes } from "../config/status-codes.config"
 import { envVariableConfig } from "../config/env-variables.config"
 
 export const asyncHandler = (
@@ -11,24 +11,27 @@ export const asyncHandler = (
 }
 
 export const errorHandler: ErrorRequestHandler = (
-  error: Error & { statusCode: number },
+  error: ApiError | Error,
   req: Request,
   res: Response
 ) => {
   console.error(error)
 
-  if (!(error instanceof ApiError)) {
-    const message = error.message || "something went wrong"
-    error = new ApiError(message, StatusCodes.InternalError, [], error.stack)
-  }
+  if (error instanceof ApiError) {
+    const { statusCode, stack, ...filteredError } = error
 
-  const { statusCode, stack, ...strippedError } = error
+    const response: { message: string } = {
+      ...filteredError,
+      ...(envVariableConfig.nodeEnv === "development" ? { stack } : {}),
+    }
+    res.status(statusCode).json(response)
+  } else {
+    const { stack, ...filteredError } = error
 
-  const response: { message: string } = {
-    ...strippedError,
-    ...(envVariableConfig.nodeEnv === "development"
-      ? { stack: error.stack }
-      : {}),
+    res.status(StatusCodes.InternalError).json({
+      message: error.message ?? "something went wrong",
+      data: filteredError,
+      ...(envVariableConfig.nodeEnv === "development" ? { stack } : {}),
+    })
   }
-  res.status(statusCode).json(response)
 }

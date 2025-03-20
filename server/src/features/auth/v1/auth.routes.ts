@@ -13,6 +13,8 @@ const authRouter = Router()
 authRouter.route("/register").post(asyncHandler(registerUser))
 authRouter.route("/login").post(asyncHandler(loginUser))
 authRouter.route("/refresh").get(asyncHandler(refreshTokens))
-authRouter.route("/logout").get(checkUserAccess, asyncHandler(logout))
+authRouter
+  .route("/logout")
+  .get(asyncHandler(checkUserAccess), asyncHandler(logout))
 
 export default authRouter

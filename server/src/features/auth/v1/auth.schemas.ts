@@ -12,7 +12,6 @@ export const registerSchema = z.object({
   email: emailSchema,
   mobile: mobileSchema,
   password: passwordSchema,
-  // cart: z.array(z.object({ id: z.string(), quantity: z.number() })).optional(),
   cart: z.array(cartItemSchema),
 })
 

@@ -25,8 +25,8 @@ export const envVariableConfig = {
   refreshTokenSecret: getEnvVariableString("REFRESH_TOKEN_SECRET"),
   refreshTokenExpiry: getEnvVariableNumber("REFRESH_TOKEN_EXPIRY", 604800000), // 1 week
   cookieSecret: getEnvVariableString("COOKIE_SECRET"),
-  frontendUrl: getEnvVariableString("FRONTEND_URL"),
   corsOrigin: getEnvVariableString("CORS_ORIGIN"),
+  dataLimit: getEnvVariableString("DATA_LIMIT", "16kb"),
   // db variables from here
   dbUsername: getEnvVariableString("DB_USERNAME"),
   dbPassword: getEnvVariableString("DB_PASSWORD"),

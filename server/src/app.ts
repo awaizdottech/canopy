@@ -1,23 +1,25 @@
 import express from "express"
 import cors from "cors"
+import morgan from "morgan"
 import cookieParser from "cookie-parser"
 import userRouter from "./features/users/v1/user.routes"
 import productRouter from "./features/products/v1/product.routes"
 import orderRouter from "./features/orders/v1/order.routes"
 import { errorHandler } from "./middlewares/error.middlewares"
-import morgan from "morgan"
 import authRouter from "./features/auth/v1/auth.routes"
+import { envVariableConfig } from "./config/env-variables.config"
 
 export const app = express()
-app.use(express.json({ limit: "16kb" })) // should be in a env var
-app.use(express.urlencoded({ extended: true, limit: "16kb" }))
-app.use(cookieParser(process.env.COOKIE_SECRET))
+app.use(express.json({ limit: envVariableConfig.dataLimit }))
+app.use(cookieParser(envVariableConfig.cookieSecret))
 app.use(
   cors({
     origin:
-      process.env.NODE_ENV == "production" ? process.env.CORS_ORIGIN : "*",
+      envVariableConfig.nodeEnv == "production"
+        ? envVariableConfig.corsOrigin
+        : true,
     credentials: true,
-  }) // check with multiple urls
+  })
 )
 app.use(morgan("dev"))
 

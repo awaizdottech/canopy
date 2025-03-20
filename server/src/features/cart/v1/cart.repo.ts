@@ -1,6 +1,12 @@
 import pgPromise from "pg-promise"
 import { db } from "../../../db/db"
 
+type GetCartResponse =
+  | { id: string; productId: string; quantity: number; userId: string }[]
+  | []
+
+type AddToCartResponse = GetCartResponse
+
 class CartRepoLayer {
   private db: pgPromise.IDatabase<any>
 
@@ -8,17 +14,21 @@ class CartRepoLayer {
     this.db = db
   }
 
-  getCart = async (userId: string) =>
-    this.db.manyOrNone('select * from "cartItems" where user_id=$1', [userId])
+  getCart = async (userId: string): Promise<GetCartResponse> =>
+    this.db.manyOrNone(
+      'select id,"productId","userId",quantity from "cartItems" where "userId"=$1 and deleted=false',
+      [userId]
+    )
 
   addToCart = async (
     cart: { productId: string; quantity: number; userId: string }[]
-  ) => {
+  ): Promise<AddToCartResponse> => {
     const { ColumnSet, insert } = pgPromise().helpers
-    const cs = new ColumnSet(Object.keys(cart), { table: "cartItems" })
+    const cs = new ColumnSet(["productId", "quantity", "userId"], {
+      table: "cartItems",
+    })
     const query = () =>
-      insert(cart, cs) + 'returning id,"productId","userId",quantity'
-    //=> INSERT INTO "tmp"("col_a","col_b") VALUES('a1','b1'),('a2','b2')
+      insert(cart, cs) + ' returning id,"productId","userId",quantity'
 
     return this.db.manyOrNone(query)
   }

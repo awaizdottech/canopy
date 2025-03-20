@@ -12,8 +12,8 @@ productRouter.use((req: Request, res: Response) => {
     .status(404)
     .json(
       new ApiError(
-        404,
-        "Oops! u might wanna check the route or request method!"
+        "Oops! u might wanna check the route or request method!",
+        404
       )
     )
 })

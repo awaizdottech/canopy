@@ -240,6 +240,7 @@ not storing full account numbers in payment_method table
 - location based stock & order handling for both customer & admin
 - what other file structures can be used
 - rate limiting
+- unit testing
 
 ### done
 
@@ -272,9 +273,14 @@ not storing full account numbers in payment_method table
 - monorepo at the end
 - lodash
 
+### research
+
+- check if dynamic imports like `const { neededFunction } = await import('./functions.ts');` bundles the files as a separate chunk like lazy loading
+
 # use the libraries u depend on to their full potential. start by fully going through their github readme first
 
 ## where did I lose my marks & for what
 
 - its better to give default params instead of using optional chaining whenever u want to use that
 - non-auth shouldnt throw errors with details
+- every function should have return type - manually mentioned or auto detected

@@ -1,22 +1,20 @@
 import pgPromise from "pg-promise"
 import { envVariableConfig } from "../config/env-variables.config"
-let db: pgPromise.IDatabase<any> //TODO:  no anys
+
+export const db = pgPromise()({
+  user: envVariableConfig.dbUsername,
+  host: envVariableConfig.dbHost,
+  database: envVariableConfig.dbName,
+  password: envVariableConfig.dbPassword,
+  port: envVariableConfig.dbPort,
+  query_timeout: envVariableConfig.dbQueryTimeout,
+  connectionTimeoutMillis: envVariableConfig.dbConnectionTimeout,
+})
 
 export const connectDB = async () => {
-  const connectionPool = pgPromise()({
-    user: envVariableConfig.dbUsername,
-    host: envVariableConfig.dbHost,
-    database: envVariableConfig.dbName,
-    password: envVariableConfig.dbPassword,
-    port: envVariableConfig.dbPort,
-    query_timeout: envVariableConfig.dbQueryTimeout,
-    connectionTimeoutMillis: envVariableConfig.dbConnectionTimeout,
-  })
-
   for (let i = 0; i < envVariableConfig.dbConnectionRetries; i++) {
     try {
-      const connection = await connectionPool.connect()
-      db = connectionPool
+      const connection = await db.connect()
       connection.done()
       return
     } catch (error) {
@@ -35,5 +33,3 @@ export const connectDB = async () => {
     }
   }
 }
-
-export { db }

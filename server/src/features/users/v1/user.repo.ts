@@ -3,18 +3,21 @@ import { db } from "../../../db/db"
 import { ApiError } from "../../../helpers/api-generics.helpers"
 import { paymentMethodType, updateUserInputsType } from "./user.schemas"
 
+type GetRoleResponse = { role: string }
+
 class UserRepoLayer {
-  private db: pgPromise.IDatabase<any>
+  private db
 
   constructor(db: pgPromise.IDatabase<any>) {
     this.db = db
   }
+  //TODO: define returning types for all functions here properly
 
   updateUser = () => {
     return {}
   }
 
-  getRole = async (roleId: string) =>
+  getRole = async (roleId: string): Promise<GetRoleResponse> =>
     this.db.one(
       new PS({
         text: "select role from roles where id=$1",

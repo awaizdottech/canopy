@@ -20,7 +20,7 @@ import {
 } from "./user.repo"
 import {
   addressType,
-  cartType,
+  // cartType,
   ordersType,
   paymentMethodType,
   updateUserInputsType,
@@ -31,12 +31,11 @@ export const updateUserService = async (
   userId: string
 ) => {
   try {
-    const { updateQuery, values } = updateUserQueryGenerator({
-      ...updateUserInputs,
-      id: userId,
-    })
-
-    return (await updateUser(updateQuery, values)).data
+    // const { updateQuery, values } = updateUserQueryGenerator({
+    //   ...updateUserInputs,
+    //   id: userId,
+    // })
+    // return (await updateUser(updateQuery, values)).data
   } catch (error) {
     throw error
   }
@@ -44,14 +43,14 @@ export const updateUserService = async (
 
 export const updateCartService = async (
   action: "add" | "remove",
-  cart: cartType,
+  // cart: cartType,
   userId: string
 ) => {
   if (action == "add") {
-    const { insertQuery, values } = addToCartQueryGenerator(userId, cart)
-    return await addToCart(insertQuery, values)
+    // const { insertQuery, values } = addToCartQueryGenerator(userId, cart)
+    // return await addToCart(insertQuery, values)
   } else {
-    if (cart[0].id) return await removeFromCart(cart[0].id)
+    // if (cart[0].id) return await removeFromCart(cart[0].id)
   }
 }
 
@@ -61,8 +60,8 @@ export const updateOrdersService = async (
   userId: string
 ) => {
   if (action == "confirm") {
-    const { insertQuery, values } = addToOdersQueryGenerator(userId, orders)
-    return await addToOrders(insertQuery, values)
+    // const { insertQuery, values } = addToOdersQueryGenerator(userId, orders)
+    // return await addToOrders(insertQuery, values)
   }
 }
 
