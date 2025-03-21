@@ -4,7 +4,7 @@ const check = async () => {
   try {
     console.log(
       "yo"
-      // await db.one("select role from roles where id=$1", [1])
+      // await db.one(`ALTER TABLE users ALTER COLUMN "roleId" SET DEFAULT 1;`)
     )
   } catch (error) {
     console.log(error)

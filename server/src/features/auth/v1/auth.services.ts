@@ -12,7 +12,7 @@ import { StatusCodes } from "../../../config/status-codes.config"
 export const registerUser = async (
   registerInputs: z.infer<typeof registerSchema>
 ) => {
-  if (await authRepoLayer.getUser(registerInputs.email))
+  if (await authRepoLayer.getUserByEmailOrMobile(registerInputs.email))
     throw new ApiError("bad request", StatusCodes.BadRequest)
 
   const { cart, ...user } = registerInputs
@@ -29,13 +29,15 @@ export const registerUser = async (
         userId: savedUser.id,
       }))
     )
-} // TODO: should I make getuser dynamic in the sense I can tell it to return(login) or not(register) and what to return (login)
+} // TODO: should I make getuser dynamic in the sense I can tell it what to return(login) or not(register)
 
 export const loginUser = async (loginInputs: z.infer<typeof loginSchema>) => {
   let user
-  if (loginInputs.email) user = await authRepoLayer.getUser(loginInputs.email)
+  if (loginInputs.email)
+    user = await authRepoLayer.getUserByEmailOrMobile(loginInputs.email)
   else if (loginInputs.mobile)
-    user = await authRepoLayer.getUser(loginInputs.mobile)
+    user = await authRepoLayer.getUserByEmailOrMobile(loginInputs.mobile)
+  console.log(user)
 
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
@@ -79,9 +81,8 @@ export const refreshTokens = async (incomingRefreshToken: string) => {
     incomingRefreshToken,
     envVariableConfig.refreshTokenSecret
   ) as jwt.JwtPayload
-  // TODO: invalidate old token on logout & create & store new refresh token every time access token is refreshed/generated
 
-  const user = await authRepoLayer.getUser(decodedToken.id)
+  const user = await authRepoLayer.getUserById(decodedToken.id)
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
   if (incomingRefreshToken !== user.refreshToken)
@@ -114,6 +115,8 @@ export const logout = async (incomingRefreshToken: string) => {
   })
 }
 
+// helpers
+
 const hashPassword = async (password: string) => bcrypt.hash(password, 10)
 
 const isPasswordCorrect = async (passwords: {
@@ -122,7 +125,7 @@ const isPasswordCorrect = async (passwords: {
 }) => bcrypt.compare(passwords.inputPassword, passwords.dbPassword)
 
 const generateAccessToken = (user: {
-  id: string
+  id: number
   username: string
   email: string
 }) =>
@@ -139,7 +142,7 @@ const generateAccessToken = (user: {
     }
   )
 
-const generateRefreshToken = (id: string) =>
+const generateRefreshToken = (id: number) =>
   jwt.sign(
     {
       id,

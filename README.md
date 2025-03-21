@@ -202,49 +202,29 @@ not storing full account numbers in payment_method table
 
 ### top priority
 
-- no \* in queries, use specific fields
 - how env variables are used in nodejs & how does dotenv work
-- checking env variables in nodejs & creating fcuntions to access them
 - custom & http defined status codes in nodejs used as variables
-- implementing refresh token updation at every access token generation with invalidating/expiring old tokens
 - morgan details(imnplemented in little more detail in echo, as well as winston), implementation for production & logging levels with respect to production, development, testing etc
-- logging errors in console in dev mode
 - client doesnt need detail messages of what went wrong
-- same names for controllers, services & repo functions if possible - u can differentiate by giving them alias at importing
-- remove status code from the error object, we dont need the code twice
-- use object notation in db query params instead of array notation
 - types & interfaces in caps. dont create array types of interfaces as we can just use type[] to define an array of that type
-- no runtime query generation
 
 ### next
 
-- error handling at db conn creation
 - rerturn types for all functions & types wherever possible
 - what tsc cmd does
 - types of licenses
 - tsc v tsc -b cmds
 - tsconfig fields with all possible values
-- extended option in app.ts
-- env variable for data limit from frontend
-- no hard coded values
-- try catch not needed throughout api flows except repo functions because of asynchandler - confirm
 - tokens not in body. how to handle them for mobile. how can react code be used for mobile apps. which frontend & how does it send tokens in header
-- separate registration & login, dont do both in register
-- dont use 'any' type anywhere (not even in db methods)
 - arrow vs normal functions
-- action field in update flows is unnecessary
 - all packages in package.json details
 
 ### later
 
-- location based stock & order handling for both customer & admin
 - what other file structures can be used
-- rate limiting
 - unit testing
-
-### done
-
-- diff between package.json and package-lock.json - refer official or ask source to refer
+- rate limiting
+- location based stock & order handling for both customer & admin
 
 ## client
 

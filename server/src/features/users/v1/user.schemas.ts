@@ -48,21 +48,21 @@ export const updateUserSchema = z
   .partial()
 
 export const cartItemSchema = z.object({
-  productId: z.string(),
+  productId: z.number(),
   quantity: z.number(),
 })
 
 export const orderItemSchema = z.object({
-  id: z.string(),
+  id: z.number(),
   quantity: z.number(),
   total: z.number(),
   paymentMethodId: z.string(),
-  addressId: z.string(),
+  addressId: z.number(),
 })
 
 export const addressSchema = z.object({
   address: z.string().max(200, "limit 200"),
-  id: z.string().optional(),
+  id: z.number().optional(),
 })
 
 export const paymentMethodSchema = z.object({
@@ -70,7 +70,7 @@ export const paymentMethodSchema = z.object({
   expiryDate: z.date(),
   cvv: z.string().length(3),
   nameOnCard: z.string().max(50),
-  id: z.string().optional(),
+  id: z.number().optional(),
 })
 
 export type updateUserInputsType = z.infer<typeof updateUserSchema>

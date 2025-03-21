@@ -28,7 +28,7 @@ export const checkUserAccess = async (
     envVariableConfig.accessTokenSecret
   ) as jwt.JwtPayload
 
-  const user = await authRepoLayer.getUser(decodedToken.id)
+  const user = await authRepoLayer.getUserById(decodedToken.id)
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
   req.user = user

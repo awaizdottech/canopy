@@ -28,7 +28,7 @@ import {
 
 export const updateUserService = async (
   updateUserInputs: updateUserInputsType,
-  userId: string
+  userId: number
 ) => {
   try {
     // const { updateQuery, values } = updateUserQueryGenerator({
@@ -44,7 +44,7 @@ export const updateUserService = async (
 export const updateCartService = async (
   action: "add" | "remove",
   // cart: cartType,
-  userId: string
+  userId: number
 ) => {
   if (action == "add") {
     // const { insertQuery, values } = addToCartQueryGenerator(userId, cart)
@@ -57,7 +57,7 @@ export const updateCartService = async (
 export const updateOrdersService = async (
   action: "confirm" | "cancel",
   orders: ordersType,
-  userId: string
+  userId: number
 ) => {
   if (action == "confirm") {
     // const { insertQuery, values } = addToOdersQueryGenerator(userId, orders)
@@ -68,7 +68,7 @@ export const updateOrdersService = async (
 export const updateAddressesService = async (
   action: "add" | "remove",
   address: addressType,
-  userId: string
+  userId: number
 ) => {
   if (action == "add") {
     return await addToAddresses({ userId, address: address.address })
@@ -78,7 +78,7 @@ export const updateAddressesService = async (
 export const updatePaymentMethodsService = async (
   action: "add" | "remove",
   paymentMethod: paymentMethodType,
-  userId: string
+  userId: number
 ) => {
   if (action == "add") {
     return await addToPaymentMethods({ userId, ...paymentMethod })

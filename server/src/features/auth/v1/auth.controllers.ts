@@ -11,20 +11,18 @@ import { envVariableConfig } from "../../../config/env-variables.config"
 import { StatusCodes } from "../../../config/status-codes.config"
 
 const cookieOptions = {
-  httpsOnly: true,
+  httpOnly: true,
   secure: envVariableConfig.nodeEnv === "production",
   sameSite: "lax" as const,
   signed: true,
   ...(envVariableConfig.nodeEnv === "production" && {
     domain: envVariableConfig.corsOrigin,
   }),
-  // domain & path Options lets us decide where the cookie is accessible in frontend to be sent to backend
 }
-// TODO: do they help with if cookies get stolen/ to avoid getting the cookies stealen?
 
 export const registerUser = async (req: Request, res: Response) => {
   const validation = registerSchema.safeParse(req.body)
-  if (!validation.success) return res.status(StatusCodes.BadRequest)
+  if (!validation.success) return res.status(StatusCodes.BadRequest).end()
 
   await registerUserService(validation.data)
 
@@ -35,7 +33,7 @@ export const registerUser = async (req: Request, res: Response) => {
 
 export const loginUser = async (req: Request, res: Response) => {
   const validation = loginSchema.safeParse(req.body)
-  if (!validation.success) return res.status(StatusCodes.BadRequest)
+  if (!validation.success) return res.status(StatusCodes.BadRequest).end()
 
   const { user, accessToken, refreshToken } = await loginUserService(
     validation.data
@@ -56,7 +54,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const refreshTokens = async (req: Request, res: Response) => {
   const incomingRefreshToken = req.signedCookies.refreshToken
-  if (!incomingRefreshToken) return res.status(StatusCodes.BadRequest)
+  if (!incomingRefreshToken) return res.status(StatusCodes.BadRequest).end()
 
   const { accessToken, refreshToken } = await refreshTokensService(
     incomingRefreshToken

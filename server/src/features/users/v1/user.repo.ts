@@ -17,13 +17,8 @@ class UserRepoLayer {
     return {}
   }
 
-  getRole = async (roleId: string): Promise<GetRoleResponse> =>
-    this.db.one(
-      new PS({
-        text: "select role from roles where id=$1",
-        values: [roleId],
-      })
-    )
+  getRole = async (roleId: number): Promise<GetRoleResponse> =>
+    this.db.one("select role from roles where id=$1", [roleId])
 }
 
 // generic way to skip NULL/undefined values for strings:
@@ -101,7 +96,7 @@ export const updateUser = async (updateQuery: string, values: string[]) => {
 }
 
 // redone
-export const getCart = async (userId: string) => {
+export const getCart = async (userId: number) => {
   try {
     return await db.manyOrNone("select * from cart_items where user_id=$1", [
       userId,
@@ -136,7 +131,7 @@ export const removeFromCart = async (cartItemId: number) => {
   }
 }
 
-export const getOrders = async (userId: string) => {
+export const getOrders = async (userId: number) => {
   try {
     return await db.any("select * from orders where user_id=$1", [userId])
   } catch (error) {
@@ -155,7 +150,7 @@ export const addToOrders = async (
   }
 }
 
-export const getAddresses = async (userId: string) => {
+export const getAddresses = async (userId: number) => {
   try {
     return await db.any("select * from addresses where user_id=$1", [userId])
   } catch (error) {
@@ -164,7 +159,7 @@ export const getAddresses = async (userId: string) => {
 }
 
 export const addToAddresses = async (details: {
-  userId: string
+  userId: number
   address: string
 }) => {
   try {
@@ -177,7 +172,7 @@ export const addToAddresses = async (details: {
   }
 }
 
-export const removeFromAddresses = async (addressId: string) => {
+export const removeFromAddresses = async (addressId: number) => {
   try {
     return await db.one("delete from addresses where id=$1 returning *", [
       addressId,
@@ -187,7 +182,7 @@ export const removeFromAddresses = async (addressId: string) => {
   }
 }
 
-export const getPaymentMethods = async (userId: string) => {
+export const getPaymentMethods = async (userId: number) => {
   try {
     return await db.any("select * from payment_methods where user_id=$1", [
       userId,
@@ -199,7 +194,7 @@ export const getPaymentMethods = async (userId: string) => {
 
 export const addToPaymentMethods = async (
   details: paymentMethodType & {
-    userId: string
+    userId: number
   }
 ) => {
   try {
@@ -218,7 +213,7 @@ export const addToPaymentMethods = async (
   }
 }
 
-export const removeFromPaymentMethods = async (paymentMethodId: string) => {
+export const removeFromPaymentMethods = async (paymentMethodId: number) => {
   try {
     return await db.one("delete from payment_methods where id=$1 returning *", [
       paymentMethodId,
