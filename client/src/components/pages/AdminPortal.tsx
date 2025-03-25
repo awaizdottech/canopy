@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box"
-import { ProductGriditem } from "../components"
-import { getOrderedItems } from "../services/user.services"
+import { ProductGriditem } from ".."
+import { getOrderedItems } from "../../services/user.services"
 import { useEffect, useState } from "react"
 
 const AdminPortal = () => {

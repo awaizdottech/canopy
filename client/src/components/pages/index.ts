@@ -1,6 +1,6 @@
 export { default as Home } from "./Home"
 export { default as ProductDetails } from "./ProductDetails"
-export { default as NotFound404 } from "./NotFound404"
+export { default as ErrorPage } from "./ErrorPage"
 export { default as Cart } from "./Cart"
 export { default as Checkout } from "./Checkout"
 export { default as UserDashboard } from "./UserDashboard"

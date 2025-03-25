@@ -21,9 +21,15 @@ export const envVariableConfig = {
   nodeEnv: getEnvVariableString("NODE_ENV", "development"),
   port: getEnvVariableNumber("PORT", 3000),
   accessTokenSecret: getEnvVariableString("ACCESS_TOKEN_SECRET"),
-  accessTokenExpiry: getEnvVariableNumber("ACCESS_TOKEN_EXPIRY", 86400000), // 1 day
+  accessTokenExpiry: getEnvVariableNumber(
+    "ACCESS_TOKEN_EXPIRY_MILLIS",
+    86400000
+  ), // 1 day
   refreshTokenSecret: getEnvVariableString("REFRESH_TOKEN_SECRET"),
-  refreshTokenExpiry: getEnvVariableNumber("REFRESH_TOKEN_EXPIRY", 604800000), // 1 week
+  refreshTokenExpiry: getEnvVariableNumber(
+    "REFRESH_TOKEN_EXPIRY_MILLIS",
+    604800000
+  ), // 1 week
   cookieSecret: getEnvVariableString("COOKIE_SECRET"),
   corsOrigin: getEnvVariableString("CORS_ORIGIN"),
   dataLimit: getEnvVariableString("DATA_LIMIT", "16kb"),
@@ -33,11 +39,14 @@ export const envVariableConfig = {
   dbHost: getEnvVariableString("DB_HOST"),
   dbPort: getEnvVariableNumber("DB_PORT", 5432), // default to postgreSQL default port
   dbName: getEnvVariableString("DB_NAME"),
-  dbQueryTimeout: getEnvVariableNumber("DB_QUERY_TIMEOUT", 3000), // default 3s
-  dbConnectionTimeout: getEnvVariableNumber("DB_CONNECTION_TIMEOUT", 3000), // default 3s
+  dbQueryTimeout: getEnvVariableNumber("DB_QUERY_TIMEOUT_MILLIS", 3000), // default 3s
+  dbConnectionTimeout: getEnvVariableNumber(
+    "DB_CONNECTION_TIMEOUT_MILLIS",
+    3000
+  ), // default 3s
   dbConnectionRetries: getEnvVariableNumber("DB_CONNECTION_RETRIES", 3), // default 3 retries
   dbConnectionRetryDelay: getEnvVariableNumber(
-    "DB_CONNECTION_RETRY_DELAY",
+    "DB_CONNECTION_RETRY_DELAY_MILLIS",
     3000
   ), // default 3s
 }

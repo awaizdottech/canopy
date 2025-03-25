@@ -8,20 +8,19 @@ import {
   Cart,
   Checkout,
   Home,
-  NotFound404,
+  ErrorPage,
   ProductDetails,
   Profile,
   UserDashboard,
-} from "./pages"
-import { Login, Register } from "./components"
-import AuthCheck from "./auth-wrappers/AuthCheck.tsx"
-import AdminCheck from "./auth-wrappers/AdminCheck.tsx"
+} from "./components/pages/index.ts"
+import AuthCheck from "./components/auth/wrappers/AuthCheck.tsx"
+import AdminCheck from "./components/auth/wrappers/AdminCheck.tsx"
 
 const router = createBrowserRouter([
   {
     path: "",
     element: <App />,
-    errorElement: <NotFound404 />,
+    errorElement: <ErrorPage />, // doesnt catch errors thrown in event handlers or useEffect
     children: [
       {
         path: "/",
@@ -67,20 +66,12 @@ const router = createBrowserRouter([
           </AuthCheck>
         ),
       },
-      {
-        path: "/register",
-        element: <Register />,
-      },
-      {
-        path: "/login",
-        element: <Login />,
-      },
     ],
   },
 ])
 
 createRoot(document.getElementById("root")!).render(
-  // <StrictMode>
-  <RouterProvider router={router} />
-  // </StrictMode>
+  <StrictMode>
+    <RouterProvider router={router} />
+  </StrictMode>
 )

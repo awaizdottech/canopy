@@ -1,12 +1,12 @@
 import { useParams } from "react-router"
-import useProductStore from "../stores/products-store"
-import { ProductGriditem } from "../components"
+import useProductStore from "../../stores/products-store"
+import { ProductGriditem } from ".."
 import Button from "@mui/material/Button"
 import { useEffect, useState } from "react"
-import { getProducts } from "../services/products.services"
-import useUserStore from "../stores/user-store"
+import { getProducts } from "../../services/products.services"
 import { Box } from "@mui/material"
-import { isProductInCart } from "../services/user.services"
+import { isProductInCart } from "../../services/user.services"
+import useCartStore from "../../stores/cart-store"
 
 const ProductDetails = () => {
   console.log("product details rendered")
@@ -14,8 +14,8 @@ const ProductDetails = () => {
   const [error, setError] = useState(false)
   if (!id) setError(true)
   const product = useProductStore(state => state.products).get(Number(id!))
-  const addToCart = useUserStore(state => state.addToCart)
-  const cart = useUserStore(state => state.user.cart)
+  const addToCart = useCartStore(state => state.addToCart)
+  const cart = useCartStore(state => state.cart)
   const check = isProductInCart(product!.id, cart)
 
   useEffect(() => {

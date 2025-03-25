@@ -112,8 +112,6 @@ export const addToCart = async (
   values: (string | number)[]
 ) => {
   try {
-    console.log(insertQuery, values)
-
     return await db.manyOrNone(insertQuery, values)
   } catch (error) {
     throw new ApiError("failed to addToCart")

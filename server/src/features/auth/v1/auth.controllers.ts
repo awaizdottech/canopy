@@ -54,7 +54,7 @@ export const loginUser = async (req: Request, res: Response) => {
 
 export const refreshTokens = async (req: Request, res: Response) => {
   const incomingRefreshToken = req.signedCookies.refreshToken
-  if (!incomingRefreshToken) return res.status(StatusCodes.BadRequest).end()
+  if (!incomingRefreshToken) return res.status(StatusCodes.Unauthorised).end()
 
   const { accessToken, refreshToken } = await refreshTokensService(
     incomingRefreshToken
@@ -75,7 +75,7 @@ export const refreshTokens = async (req: Request, res: Response) => {
 
 export const logout = async (req: Request, res: Response) => {
   const incomingRefreshToken = req.signedCookies.refreshToken
-  if (!incomingRefreshToken) return res.status(StatusCodes.BadRequest)
+  if (!incomingRefreshToken) return res.status(StatusCodes.Unauthorised).end()
 
   await logoutService(incomingRefreshToken)
 

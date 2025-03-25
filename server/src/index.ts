@@ -18,4 +18,5 @@ const main = async () => {
   )
 }
 
-main().then(hi => check())
+main()
+// .then(() => check())

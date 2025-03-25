@@ -1,19 +1,18 @@
 import AccountCircle from "@mui/icons-material/AccountCircle"
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
-import LoginIcon from "@mui/icons-material/Login"
 import { Badge, IconButton, Menu, MenuItem } from "@mui/material"
 import { Link } from "react-router"
 import useUserStore from "../../stores/user-store"
+import Login from "../auth/login/Login"
+import useCartStore from "../../stores/cart-store"
 
 type propsType = {
   mobileMoreAnchorEl: HTMLElement | null
-  mobileMenuId: string
   handleProfileMenuOpen: (event: React.MouseEvent<HTMLElement>) => void
   handleMobileMenuClose: () => void
 }
 const MobileMenu = ({
   mobileMoreAnchorEl,
-  mobileMenuId,
   handleProfileMenuOpen,
   handleMobileMenuClose,
 }: propsType) => {
@@ -27,7 +26,6 @@ const MobileMenu = ({
         vertical: "top",
         horizontal: "right",
       }}
-      id={mobileMenuId}
       keepMounted
       transformOrigin={{
         vertical: "top",
@@ -37,11 +35,10 @@ const MobileMenu = ({
       onClose={handleMobileMenuClose}>
       <Link to="/cart">
         <MenuItem>
-          <IconButton
-            size="large"
-            aria-label="show 4 new mails"
-            color="inherit">
-            <Badge badgeContent={4} color="error">
+          <IconButton size="large" color="inherit">
+            <Badge
+              badgeContent={useCartStore(state => state.cart).length}
+              color="error">
               <ShoppingCartIcon />
             </Badge>
           </IconButton>
@@ -51,26 +48,17 @@ const MobileMenu = ({
       {authStatus ? (
         <MenuItem onClick={handleProfileMenuOpen}>
           <Link to="/profile">
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="primary-search-account-menu"
-              aria-haspopup="true"
-              color="inherit">
+            <IconButton size="large" color="inherit">
               <AccountCircle />
             </IconButton>
             <p>Profile</p>
           </Link>
         </MenuItem>
       ) : (
-        <Link to="/register">
-          <MenuItem>
-            <IconButton size="large" aria-label="login button" color="inherit">
-              <LoginIcon />
-            </IconButton>
-            <p>Login</p>
-          </MenuItem>
-        </Link>
+        <MenuItem>
+          <Login />
+          <p>Login</p>
+        </MenuItem>
       )}
     </Menu>
   )

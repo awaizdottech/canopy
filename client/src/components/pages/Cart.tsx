@@ -1,19 +1,20 @@
 import Box from "@mui/material/Box"
 import Grid from "@mui/material/Grid2"
 import Button from "@mui/material/Button"
-import useUserStore from "../stores/user-store"
-import { ProductGriditem } from "../components"
+import { ProductGriditem } from ".."
 import { Link, useNavigate } from "react-router"
 import { useCallback } from "react"
-import { getCartItems, getCartItemsTotal } from "../services/user.services"
-import { productType } from "../stores/products-store"
+import { getCartItems, getCartItemsTotal } from "../../services/user.services"
+import { productType } from "../../stores/products-store"
+import useOrdersStore from "../../stores/orders-store"
+import useCartStore from "../../stores/cart-store"
 
 const Cart = () => {
   console.log("cart rendered")
-  const addToOrders = useUserStore(state => state.addToOrders)
-  const removeFromCart = useUserStore(state => state.removeFromCart)
+  const addToOrders = useOrdersStore(state => state.addToOrders)
+  const removeFromCart = useCartStore(state => state.removeFromCart)
   const navigate = useNavigate()
-  const cart = useUserStore(state => state.user.cart)
+  const cart = useCartStore(state => state.cart)
   const cartItems = getCartItems(cart)
   const cartTotal = getCartItemsTotal(
     cartItems?.filter((item): item is productType => item !== undefined) ?? []

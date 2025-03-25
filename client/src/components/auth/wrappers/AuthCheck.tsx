@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import useUserStore from "../stores/user-store"
+import useUserStore from "../../../stores/user-store"
 import { Navigate } from "react-router"
 
 const AuthCheck = ({ children }: { children: ReactNode }) => {

@@ -15,20 +15,13 @@ export const registerSchema = z.object({
   cart: z.array(cartItemSchema),
 })
 
-export const loginSchema = z.discriminatedUnion("loginType", [
-  z.object({
-    loginType: z.literal("email"),
-    email: emailSchema,
-    password: passwordSchema,
-    mobile: mobileSchema.optional(),
-    cart: z.array(cartItemSchema),
-  }),
+export const loginSchema = z.object({
+  password: passwordSchema,
+  cart: z.array(cartItemSchema),
+  emailOrMobile: z.string().refine(val => {
+    const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
+    const mobileRegex = /^(\+?91|0)?[6-9]\d{9}$/
 
-  z.object({
-    loginType: z.literal("mobile"),
-    mobile: mobileSchema,
-    password: passwordSchema,
-    email: emailSchema.optional(),
-    cart: z.array(cartItemSchema),
+    return emailRegex.test(val) || mobileRegex.test(val)
   }),
-])
+})

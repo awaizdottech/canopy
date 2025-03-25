@@ -228,6 +228,13 @@ not storing full account numbers in payment_method table
 
 ## client
 
+- maps arent suitable for the project usecase
+- generic name for restApi & separate functions for get, post, put, delete
+- what errors are caught by errorElement: <ErrorPage />, so should it be notfound?
+- useref in header instead of useState, useref doesnt rerender the component - study about it
+- why two diff menus in header
+
+- no cart products listed on home page
 - whats vite, vite.config.ts
 - how env variables are used in our website as its static & can they be changed. do we use other packages to handle env variables in react other than vite
 - how vite works with react. which file is the entry point, how does it know where to start, etc.
@@ -237,18 +244,8 @@ not storing full account numbers in payment_method table
 - eslint, its config
 - vite-env.d.ts whats that
 - diff between app.css & index.css
-- diff stores for cart, products - why
 - strict mode - resource?
-- what errors are caught by errorElement: <NotFound404 />, so should it be notfound?
-- sx vs style
-- useref in header instead of useState, useref doesnt rerender the component - study about it
-- why two diff menus in header
-- maps arent suitable for the project usecase
-- generic name for superaxios & separate functions for get, post, put, delete
-- no password format hint in login
-- no cart products listed on home page
 - comments that document the code via jsdoc or tsdoc etc
-- should I separate stores as per backend features? - ask
 - bundler configurations for min bundle size
 - monorepo at the end
 - lodash

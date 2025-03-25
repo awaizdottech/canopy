@@ -1,8 +1,7 @@
 export enum StatusCodes {
+  NotFound = 404,
   Success = 200,
   BadRequest = 400,
   Unauthorised = 401,
-  Forbidden = 403,
-  NotFound = 404,
   InternalError = 500,
 }

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router"
-import useUserStore from "../stores/user-store"
+import useUserStore from "../../../stores/user-store"
 
 const AdminCheck = ({ children }: { children: React.ReactNode }) => {
   const authStatus = useUserStore(state => state.authStatus)

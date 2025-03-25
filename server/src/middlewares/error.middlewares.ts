@@ -13,7 +13,8 @@ export const asyncHandler = (
 export const errorHandler: ErrorRequestHandler = (
   error: ApiError | Error,
   req: Request,
-  res: Response
+  res: Response,
+  next: NextFunction
 ) => {
   console.error(error)
 

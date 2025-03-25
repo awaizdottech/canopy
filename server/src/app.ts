@@ -10,7 +10,7 @@ import authRouter from "./features/auth/v1/auth.routes"
 import { envVariableConfig } from "./config/env-variables.config"
 
 export const app = express()
-app.use(express.json({ limit: envVariableConfig.dataLimit }))
+app.use(express.json({ limit: envVariableConfig.dataLimit })) //TODO: what exactly happens if other data formats are sent & how to deal with them better
 app.use(cookieParser(envVariableConfig.cookieSecret))
 app.use(
   cors({

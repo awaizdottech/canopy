@@ -1,68 +1,85 @@
-import { loginInputsType } from "../components/auth/login/Login"
-import { registerInputsType } from "../components/auth/register/Register"
+import { LoginInputs } from "../components/auth/login/Login"
+import { RegisterInputs } from "../components/auth/register/Register"
+import { StatusCodes } from "../config/status-codes.config"
+import restApi from "../helpers/rest-api"
+import { dbUserSchema } from "../schemas/user.schemas"
+import useCartStore from "../stores/cart-store"
 import useProductStore, { productType } from "../stores/products-store"
+import useUIstore from "../stores/ui-store"
 import useUserStore from "../stores/user-store"
-import { superAxios } from "../utils"
 
-export const registerAndLoginUser = async (data: registerInputsType) => {
+export const registerUser = async (data: RegisterInputs) => {
   const { confirmPassword, ...rest } = data
-  try {
-    const response = await superAxios("post", "/users/register", {
-      ...rest,
-      cart: [...useUserStore.getState().user.cart],
-    })
-    const dbUser = response.data.data.user
 
-    useUserStore.setState({
-      authStatus: true,
-      user: { ...dbUser, refreshToken: dbUser.refresh_token },
-    })
-  } catch (error) {
-    console.error(error)
+  const response = await restApi("/auth/register", "post", {
+    ...rest,
+    cart: [...useCartStore.getState().cart],
+  })
+
+  if (response?.status == StatusCodes.Success) openLoginFromRegister()
+}
+
+export const loginUser = async (data: LoginInputs) => {
+  console.log("loginUser data", data)
+
+  const response = await restApi("/auth/login", "post", {
+    ...data,
+    cart: [...useCartStore.getState().cart],
+  })
+
+  if (response?.status == StatusCodes.Success) {
+    const validation = dbUserSchema.safeParse(response?.data.data)
+    console.log(response)
+    if (validation.success) {
+      useUserStore.setState(
+        {
+          authStatus: true,
+          user: validation.data,
+        },
+        false,
+        "login"
+      )
+      useUIstore.setState({ isLoginDialogOpen: false })
+    }
   }
 }
 
-export const loginUser = async (data: loginInputsType) => {
-  try {
-    const { emailOrMobile, ...passwordObj } = data
+export const logoutUser = async () => {
+  await restApi("/auth/logout")
+  useUserStore.setState(
+    {
+      authStatus: false,
+      user: {
+        username: "dummy",
+        email: "dummy",
+        mobile: "dummy",
+        role: "customer",
+      },
+    },
+    false,
+    "logoutUser"
+  )
+}
 
-    const emailRegex = /^[a-zA-Z0-9._]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-    const mobileRegex = /^(\+?91|0)?[6-9]\d{9}$/
+export const openLoginFromRegister = () => {
+  useUIstore.setState({
+    isRegisterDialogOpen: false,
+    isLoginDialogOpen: true,
+  })
+}
 
-    type loginDataType = {
-      password: string
-      loginType?: "email" | "mobile"
-      email?: string
-      mobile?: string
-    }
-    const loginData = passwordObj as loginDataType
-
-    if (emailRegex.test(emailOrMobile)) {
-      loginData.loginType = "email"
-      loginData.email = emailOrMobile
-    }
-    if (mobileRegex.test(emailOrMobile)) {
-      loginData.loginType = "mobile"
-      loginData.mobile = emailOrMobile
-    }
-
-    const response = await superAxios("post", "/users/login", loginData)
-    const dbUser = response.data.data.user
-    console.log(dbUser)
-    useUserStore.setState({
-      authStatus: true,
-      user: { ...dbUser, refreshToken: dbUser.refresh_token },
-    })
-  } catch (error) {
-    console.error(error)
-  }
+export const openRegisterFromLogin = () => {
+  useUIstore.setState({
+    isRegisterDialogOpen: true,
+    isLoginDialogOpen: false,
+  })
 }
 
 export const getCartItems = (
-  cartItems: { product_id: string; quantity: number }[]
+  cartItems: { productId: number; quantity: number }[]
 ) => {
   return cartItems.map(item =>
-    useProductStore.getState().products.get(item.product_id)
+    useProductStore.getState().products.get(item.productId)
   )
 }
 
@@ -74,7 +91,7 @@ export const getCartItemsTotal = (cartItems: productType[]) => {
   }, 0)
 }
 
-export const getOrderItems = (orderItemsIDs: string[]) => {
+export const getOrderItems = (orderItemsIDs: number[]) => {
   return orderItemsIDs.map(id => useProductStore.getState().products.get(id))
 }
 
@@ -113,25 +130,25 @@ export const confirmOrder = (orderItemsIDs: number[], username: string) => {
 export const getOrderedItems = async () => {
   const allOrders = JSON.parse(localStorage.getItem("allOrders") ?? "[]")
   const allOrdersIDs = Object.keys(allOrders)
-  console.log(await superAxios("get", "/orders"))
+  console.log(await restApi("/orders"))
   return {
     orderedItems: allOrdersIDs.map((orderId: string) =>
-      useProductStore.getState().products.get(orderId)
+      useProductStore.getState().products.get(Number(orderId))
     ),
     allOrders,
   }
 }
 
 export const isProductInCart = (
-  id: string,
-  cart: { id: string; quantity: number }[]
+  id: number,
+  cart: { id: number; quantity: number }[]
 ): boolean => {
   let check = false
   cart.forEach(item => (item.id == id ? (check = true) : (check = false)))
   return check
 }
 
-// export const updateCartItemQuantity=(action:'increase'|'decrease',itemID:string)=>{
+// export const updateCartItemQuantity=(action:'increase'|'decrease',itemID:number)=>{
 //   const cart=useUserStore.getState().user.cart
 //   if(action=='increase') cart.forEach(item=>item.)
 // }

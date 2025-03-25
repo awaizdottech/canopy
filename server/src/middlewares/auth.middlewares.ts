@@ -21,7 +21,7 @@ export const checkUserAccess = async (
   const accessToken =
     req.signedCookies.accessToken ||
     req.header("Authorization")?.replace("Bearer ", "")
-  if (!accessToken) throw new ApiError("bad request", StatusCodes.BadRequest)
+  if (!accessToken) throw new ApiError("unauthorised", StatusCodes.Unauthorised)
 
   let decodedToken = jwt.verify(
     accessToken,
@@ -29,7 +29,7 @@ export const checkUserAccess = async (
   ) as jwt.JwtPayload
 
   const user = await authRepoLayer.getUserById(decodedToken.id)
-  if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
+  if (!user) throw new ApiError("user not found", StatusCodes.BadRequest)
 
   req.user = user
 
@@ -38,6 +38,7 @@ export const checkUserAccess = async (
 
 export const checkAdminAccess = asyncHandler(async (req, _, next) => {
   const role = (await userRepoLayer.getRole(req.user!.roleId)).role
-  if (role !== "admin") throw new ApiError("unauthorised")
+  if (role !== "admin")
+    throw new ApiError("unauthorised", StatusCodes.Unauthorised)
   next()
 })

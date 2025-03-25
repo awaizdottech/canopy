@@ -11,7 +11,7 @@ export type User = {
   profilePic: string
   refreshToken: string
   deleted: boolean
-} | null
+}
 
 type CreateUserResponse = {
   id: number
@@ -40,13 +40,13 @@ class AuthRepoLayer {
       newUser
     )
 
-  getUserByEmailOrMobile = (emailOrMobile: string): Promise<User> =>
+  getUserByEmailOrMobile = (emailOrMobile: string): Promise<User | null> =>
     this.db.oneOrNone(
       'select id, username, email, mobile, "roleId", "profilePic", password, "refreshToken", deleted from users where email=$1 or mobile=$1',
       [emailOrMobile]
     )
 
-  getUserById = (id: number): Promise<User> =>
+  getUserById = (id: number): Promise<User | null> =>
     this.db.oneOrNone(
       'select id, username, email, mobile, "roleId", "profilePic", password, "refreshToken", deleted from users where id=$1',
       [id]

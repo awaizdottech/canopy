@@ -13,7 +13,10 @@ export const registerUser = async (
   registerInputs: z.infer<typeof registerSchema>
 ) => {
   if (await authRepoLayer.getUserByEmailOrMobile(registerInputs.email))
-    throw new ApiError("bad request", StatusCodes.BadRequest)
+    throw new ApiError(
+      "user exists with the given email",
+      StatusCodes.BadRequest
+    )
 
   const { cart, ...user } = registerInputs
 
@@ -32,12 +35,9 @@ export const registerUser = async (
 } // TODO: should I make getuser dynamic in the sense I can tell it what to return(login) or not(register)
 
 export const loginUser = async (loginInputs: z.infer<typeof loginSchema>) => {
-  let user
-  if (loginInputs.email)
-    user = await authRepoLayer.getUserByEmailOrMobile(loginInputs.email)
-  else if (loginInputs.mobile)
-    user = await authRepoLayer.getUserByEmailOrMobile(loginInputs.mobile)
-  console.log(user)
+  const user = await authRepoLayer.getUserByEmailOrMobile(
+    loginInputs.emailOrMobile
+  )
 
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
@@ -86,7 +86,7 @@ export const refreshTokens = async (incomingRefreshToken: string) => {
   if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
 
   if (incomingRefreshToken !== user.refreshToken)
-    throw new ApiError("bad request", StatusCodes.BadRequest)
+    throw new ApiError("unauthorised", StatusCodes.Unauthorised)
 
   const newRefreshToken = await authRepoLayer.updateRefreshToken({
     userId: user.id,

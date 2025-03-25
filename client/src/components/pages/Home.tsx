@@ -1,9 +1,9 @@
 import { Box, Grid2 as Grid } from "@mui/material"
-import { ProductGriditem } from "../components"
-import useProductStore from "../stores/products-store"
+import { ProductGriditem } from ".."
+import useProductStore from "../../stores/products-store"
 import { Link } from "react-router"
 import { useEffect, useState } from "react"
-import { getProducts } from "../services/products.services"
+import { getProducts } from "../../services/products.services"
 
 const Home = () => {
   console.log("home rendered")
