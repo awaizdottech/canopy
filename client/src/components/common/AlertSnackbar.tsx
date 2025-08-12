@@ -2,7 +2,7 @@ import Snackbar, { SnackbarCloseReason } from "@mui/material/Snackbar"
 import Alert from "@mui/material/Alert"
 import { SyntheticEvent } from "react"
 import useUIstore from "../../stores/ui-store"
-import { envVariablesConfig } from "../../config/envVariablesConfig"
+import { envVariablesConfig } from "../../config/env-variablesConfig"
 
 const AlertSnackbar = () => {
   const snackbar = useUIstore(state => state.snackbar)

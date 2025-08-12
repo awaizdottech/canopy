@@ -9,9 +9,8 @@ import { cartRepoLayer } from "../../cart/v1/cart.repo"
 import { envVariableConfig } from "../../../config/env-variables.config"
 import { StatusCodes } from "../../../config/status-codes.config"
 
-export const registerUser = async (
-  registerInputs: z.infer<typeof registerSchema>
-) => {
+type RegisterInputs = z.infer<typeof registerSchema>
+export const registerUser = async (registerInputs: RegisterInputs) => {
   if (await authRepoLayer.getUserByEmailOrMobile(registerInputs.email))
     throw new ApiError(
       "user exists with the given email",
@@ -34,37 +33,38 @@ export const registerUser = async (
     )
 } // TODO: should I make getuser dynamic in the sense I can tell it what to return(login) or not(register)
 
-export const loginUser = async (loginInputs: z.infer<typeof loginSchema>) => {
-  const user = await authRepoLayer.getUserByEmailOrMobile(
+type LoginInputs = z.infer<typeof loginSchema>
+export const loginUser = async (loginInputs: LoginInputs) => {
+  const userInDb = await authRepoLayer.getUserByEmailOrMobile(
     loginInputs.emailOrMobile
   )
 
-  if (!user) throw new ApiError("bad request", StatusCodes.BadRequest)
+  if (!userInDb) throw new ApiError("bad request", StatusCodes.BadRequest)
 
   if (
     !(await isPasswordCorrect({
       inputPassword: loginInputs.password,
-      dbPassword: user.password,
+      dbPassword: userInDb.password,
     }))
   )
     throw new ApiError("bad request", StatusCodes.BadRequest)
 
   const savedRefreshToken = await authRepoLayer.updateRefreshToken({
-    userId: user.id,
-    value: generateRefreshToken(user.id),
+    userId: userInDb.id,
+    value: generateRefreshToken(userInDb.id),
   })
 
   if (loginInputs.cart.length) {
     await cartRepoLayer.addToCart(
-      loginInputs.cart.map(cartItem => ({ ...cartItem, userId: user.id }))
+      loginInputs.cart.map(cartItem => ({ ...cartItem, userId: userInDb.id }))
     )
   } // TODO: should I modify addToCart to either return(default) or not return based on some argument as we're not using the returning value in this & register service
 
-  const { roleId, password, refreshToken, ...filteredUser } = user
+  const { roleId, password, refreshToken, ...user } = userInDb
 
   return {
     user: {
-      ...filteredUser,
+      ...user,
       role: (await userRepoLayer.getRole(roleId)).role,
     },
     accessToken: generateAccessToken({

@@ -1,5 +1,5 @@
 import axios from "axios"
-import { envVariablesConfig } from "../config/envVariablesConfig"
+import { envVariablesConfig } from "../config/env-variablesConfig"
 import axiosRetry from "axios-retry"
 import useUIstore from "../stores/ui-store"
 
